@@ -1,7 +1,12 @@
+using System;
 using ECommerce.Repository.Data;
+using ECommerce.Service.Services;
+using ECommerce.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,14 +22,31 @@ namespace ECommerce.Presentation {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
+
             services.AddDbContext<ApplicationDbContext> (options =>
                 options.UseSqlServer (
                     Configuration.GetConnectionString ("DefaultConnection"),
                     b => b.MigrationsAssembly ("ECommerce.Presentation")));
-            services.AddDefaultIdentity<IdentityUser> (options => options.SignIn.RequireConfirmedAccount = true)
+
+            services.AddIdentity<IdentityUser, IdentityRole> (
+                    options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext> ();
+
             services.AddControllersWithViews ();
             services.AddRazorPages ();
+            services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_3_0);
+
+            services.ConfigureApplicationCookie (options => {
+                options.LoginPath = $"/Account/Login";
+                options.LogoutPath = $"/Account/Logout";
+                options.AccessDeniedPath = $"/Account/AccessDenied";
+            });
+
+            // using Microsoft.AspNetCore.Identity.UI.Services;
+            // services.AddSingleton<IEmailSender, EmailSender> ();
+            services.AddTransient<UserManager<IdentityUser>> ();
+            services.AddTransient<SignInManager<IdentityUser>> ();
+            services.AddTransient<IAccountService, AccountService> ();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
