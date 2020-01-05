@@ -3,18 +3,20 @@ using System.Threading.Tasks;
 using ECommerce.Domain.Models;
 using ECommerce.Domain.ViewModels;
 using ECommerce.Service.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.Presentation.Controllers {
     public class AccountController : Controller {
-        IAccountService _accountService;
+        private readonly IAccountService _accountService;
+        private readonly SignInManager<IdentityUser> _signInManager;
         public AccountController (IAccountService accountService) {
             _accountService = accountService;
         }
 
         [HttpGet]
         public IActionResult Register () {
-            return View ();
+            return View (new RegisterViewModel());
         }
 
         [HttpPost]
@@ -24,14 +26,25 @@ namespace ECommerce.Presentation.Controllers {
                 Email = model.Email,
                     Password = model.Password,
                     ConfirmPassword = model.ConfirmPassword,
-                    ReturnUrl = model.ReturnUrl
+                    ReturnUrl = model.ReturnUrl,
+                    UseEmailVerified=false 
             });
+
+            switch(registerResult.Status){
+                case RegisterStatus.Success:
+                    return LocalRedirect(model.ReturnUrl);
+                case RegisterStatus.RequireConfirmedAccount:
+                     return RedirectToPage("RegisterConfirmation", new { email = model.Email });
+                case RegisterStatus.Fail:
+                    return View(); 
+            }
+
             return View ();
         }
 
         [HttpGet]
         public IActionResult Login () {
-            return View (new LoginViewModel ());
+            return View (new LoginViewModel());
         }
 
         [HttpPost]

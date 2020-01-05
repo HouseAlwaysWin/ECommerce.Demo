@@ -4,29 +4,28 @@
     ViewData["Title"] = "Log in";
 }
 
+
 <h1>@ViewData["Title"]</h1>
-<div class="row">
+<div class="row" id="loginVue">
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
                 <h4>Use a local account to log in.</h4>
                 <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="@Model.Email"></label>
-                    <input asp-for="@Model.Email" class="form-control" />
-                    <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                    <label for="">Email</label>
+                    <input v-model="email" type="text"  class="form-control" />
+                    <span  class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Password"></label>
-                    <input asp-for="@Model.Password" class="form-control" />
-                    <span asp-validation-for="@Model.Password" class="text-danger"></span>
+                    <label for="">Password</label>
+                    <input v-model="password" type="password"  class="form-control" />
+                    <span  class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <div class="checkbox">
-                        <label asp-for="@Model.RememberMe">
-                            <input asp-for="@Model.RememberMe" />
-                            @Html.DisplayNameFor(m => m.RememberMe)
+                        <label >
+                            <input type="checkbox"  />
                         </label>
                     </div>
                 </div>
@@ -49,7 +48,7 @@
             <h4>Use another service to log in.</h4>
             <hr />
             @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                @if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
                     <div>
                         <p>
@@ -75,6 +74,16 @@
         </section>
     </div>
 </div>
+
+
+<environment include="Development">
+    <script src="~/js/vue-package.js" asp-append-version="true"></script>
+    <script  src="~/js/account/login.js" asp-append-version="true"></script>
+</environment>
+<environment include="Product">
+    <script src="~/js/vue-package.min.js" asp-append-version="true"></script>
+    <script  src="~/js/account/login.min.js" asp-append-version="true"></script>
+</environment>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -34,8 +34,7 @@ namespace ECommerce.Service.Services {
         /// <returns></returns>
         public async Task<RegisterResultModel> RegisterAsync (RegisterModel model) {
             RegisterResultModel result = new RegisterResultModel () {
-                IsSuccess = false,
-                // Type = RegisterResultType.Default
+                Status = RegisterStatus.Fail
             };
 
             var validator = new RegisterValidator ();
@@ -45,14 +44,26 @@ namespace ECommerce.Service.Services {
             var registerResult = await _userManager.CreateAsync (user, model.Password);
 
             if (registerResult.Succeeded) {
+
                 _logger.LogInformation ("User created a new account with password.");
 
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
-                code = WebEncoders.Base64UrlEncode (Encoding.UTF8.GetBytes (code));
-                var callbackUrl = model.ReturnUrl + $"?userId={user.Id}&code={code}";
+                if(model.UseEmailVerified){
+                // var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
+                // code = WebEncoders.Base64UrlEncode (Encoding.UTF8.GetBytes (code));
+                // var callbackUrl = model.ReturnUrl + $"?userId={user.Id}&code={code}";
 
                 // await _emailSender.SendEmailAsync (model.Email, "Confirm your email",
                 //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                }
+                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        result.Status = RegisterStatus.RequireConfirmedAccount;
+                    }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        result.Status = RegisterStatus.Success;
+                    }
             }
 
             return result;

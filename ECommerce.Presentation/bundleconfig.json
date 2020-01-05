@@ -1,0 +1,33 @@
+[
+  {
+    "outputFileName": "wwwroot/js/vue-package.js",
+    "inputFiles": [
+      "wwwroot/lib/vue/vue.dev.js",
+      "wwwroot/lib/vee-validate/dist/vee-validate.full.js",
+      "wwwroot/lib/axios/dist/axios.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/account/login.min.js",
+    "inputFiles": ["wwwroot/js/account/login.js"],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/account/register.min.js",
+    "inputFiles": ["wwwroot/js/account/register.js"],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

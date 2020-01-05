@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication;
+
 namespace ECommerce.Domain.Models
 {
 
@@ -11,6 +14,9 @@ namespace ECommerce.Domain.Models
         public string ConfirmPassword { get; set; }
 
         public string ReturnUrl { get; set; } 
+
+        public bool UseEmailVerified {get;set;}
+        
 
     }
 }

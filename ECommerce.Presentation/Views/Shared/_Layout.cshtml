@@ -43,7 +43,12 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <environment include="Development">
+    <script src="~/js/vue-package.js" asp-append-version="true"></script>
+    </environment>
+    <environment include="Product">
+    <script src="~/js/vue-package.min.js" asp-append-version="true"></script>
+    </environment>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

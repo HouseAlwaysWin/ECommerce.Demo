@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication;
 
 namespace ECommerce.Domain.ViewModels {
     public class RegisterViewModel {
@@ -13,6 +15,8 @@ namespace ECommerce.Domain.ViewModels {
 
         [Display (Name = "Confirm password")]
         public string ConfirmPassword { get; set; }
+
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
     }
