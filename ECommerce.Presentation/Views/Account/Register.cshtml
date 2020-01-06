@@ -7,32 +7,34 @@
 
 <div class="row" id="registerVue">
     <div class="col-md-4">
-        <form>
+        <validation-observer   v-slot="{ handleSubmit }">
+        <form v-on:submit.prevent="handleSubmit(onSubmit)">
             <h4>Create a new account.</h4>
             <hr />
              <div class="form-group">
                 <label >Email</label>
                 <validation rules="required" name="email" v-slot="{ errors }">
-                <input v-model="email"   class="form-control" />
+                <input v-model="email"   class="form-control" type="email" />
                 <span  class="text-danger">{{ errors[0] }}</span>
                 </validation>
             </div>
             <div class="form-group">
                 <label >Password</label> 
                 <validation rules="required" name="password" v-slot="{ errors }">
-                <input v-model="password"  class="form-control" />
+                <input v-model="password"  class="form-control" type="password"/>
                 <span  class="text-danger">{{ errors[0]}}</span>
                 </validation>
             </div>
             <div class="form-group">
                 <label >ConfirmPassword</label>
                 <validation rules="required" name="confirmPassword" v-slot="{ errors }">
-                <input v-model="confirmPassword" class="form-control" />
+                <input v-model="confirmPassword" class="form-control" type="password"/>
                 <span  class="text-danger">{{ errors[0] }}</span>
                 </validation>
             </div> 
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
+        </validation-observer>
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>

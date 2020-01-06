@@ -1,4 +1,5 @@
 Vue.component("validation", VeeValidate.ValidationProvider);
+Vue.component("validation-observer", VeeValidate.ValidationObserver);
 
 // install localize
 VeeValidate.localize({
@@ -14,15 +15,6 @@ VeeValidate.localize({
 // use current lang
 VeeValidate.localize("zh_TW");
 
-Vue.use(VeeValidate);
-
-const i18n = new VueI18n({
-  locale: "zh_TW",
-  zh_TW: {
-    validations: zh_TW
-  }
-});
-
 var registerVue = new Vue({
   el: "#registerVue",
   data: {
@@ -32,6 +24,21 @@ var registerVue = new Vue({
   },
   methods: {
     validateForm: function() {},
-    submit: function() {}
+    onSubmit: function() {
+      alert("submit");
+      var self = this;
+      var data = {
+        Username: self.email,
+        Email: self.email,
+        Password: self.password,
+        ConfirmPassword: self.confirmPassword,
+        ExternalLogins: [],
+        ReturnUrl: "/"
+      };
+      console.log(data);
+      axios.post("/Account/Register", data).then(function(response) {
+        console.log(response);
+      });
+    }
   }
 });

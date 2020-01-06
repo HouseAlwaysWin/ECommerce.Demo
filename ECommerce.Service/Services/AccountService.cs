@@ -12,16 +12,19 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
-namespace ECommerce.Service.Services {
-    public class AccountService : IAccountService {
+namespace ECommerce.Service.Services
+{
+    public class AccountService : IAccountService
+    {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<AccountService> _logger;
-        public AccountService (
+        public AccountService(
             SignInManager<IdentityUser> signInManager,
             ILogger<AccountService> logger,
             UserManager<IdentityUser> userManager
-        ) {
+        )
+        {
             _logger = logger;
             _signInManager = signInManager;
             _userManager = userManager;
@@ -32,38 +35,49 @@ namespace ECommerce.Service.Services {
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<RegisterResultModel> RegisterAsync (RegisterModel model) {
-            RegisterResultModel result = new RegisterResultModel () {
+        public async Task<RegisterResultModel> RegisterAsync(RegisterModel model)
+        {
+            RegisterResultModel result = new RegisterResultModel()
+            {
                 Status = RegisterStatus.Fail
             };
 
-            var validator = new RegisterValidator ();
-            ValidationResult validationResult = validator.Validate (model);
+            var validator = new RegisterValidator();
+            ValidationResult validationResult = validator.Validate(model);
 
             var user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            var registerResult = await _userManager.CreateAsync (user, model.Password);
+            var registerResult = await _userManager.CreateAsync(user, model.Password);
+            var errors = registerResult.Errors;
 
-            if (registerResult.Succeeded) {
+            if (errors.Count() > 0)
+            {
+                result.Message = errors.FirstOrDefault().Description;
+                return result;
+            }
 
-                _logger.LogInformation ("User created a new account with password.");
+            if (registerResult.Succeeded)
+            {
 
-                if(model.UseEmailVerified){
-                // var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
-                // code = WebEncoders.Base64UrlEncode (Encoding.UTF8.GetBytes (code));
-                // var callbackUrl = model.ReturnUrl + $"?userId={user.Id}&code={code}";
+                _logger.LogInformation("User created a new account with password.");
 
-                // await _emailSender.SendEmailAsync (model.Email, "Confirm your email",
-                //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                if (model.UseEmailVerified)
+                {
+                    // var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
+                    // code = WebEncoders.Base64UrlEncode (Encoding.UTF8.GetBytes (code));
+                    // var callbackUrl = model.ReturnUrl + $"?userId={user.Id}&code={code}";
+
+                    // await _emailSender.SendEmailAsync (model.Email, "Confirm your email",
+                    //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                 }
-                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        result.Status = RegisterStatus.RequireConfirmedAccount;
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        result.Status = RegisterStatus.Success;
-                    }
+                if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                {
+                    result.Status = RegisterStatus.RequireConfirmedAccount;
+                }
+                else
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    result.Status = RegisterStatus.Success;
+                }
             }
 
             return result;
@@ -74,40 +88,51 @@ namespace ECommerce.Service.Services {
         /// </summary>
         /// <param name="login"></param>
         /// <returns></returns>
-        public async Task<LoginResultModel> LoginAsync (LoginModel model) {
+        public async Task<LoginResultModel> LoginAsync(LoginModel model)
+        {
 
-            LoginResultModel result = new LoginResultModel () {
+            LoginResultModel result = new LoginResultModel()
+            {
                 IsSuccess = false,
                 Type = LoginResultType.Default
             };
 
-            try {
-                var validator = new LoginValidator ();
-                ValidationResult validationResult = validator.Validate (model);
+            try
+            {
+                var validator = new LoginValidator();
+                ValidationResult validationResult = validator.Validate(model);
 
-                if (!validationResult.IsValid) {
-                    result.Message = validationResult.Errors.FirstOrDefault ().ErrorMessage;
+                if (!validationResult.IsValid)
+                {
+                    result.Message = validationResult.Errors.FirstOrDefault().ErrorMessage;
                     return result;
                 }
 
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var loginResult = await _signInManager.PasswordSignInAsync (model.Email, model.Password, model.RememberMe, model.LockoutOnFailure);
-                if (loginResult.Succeeded) {
-                    _logger.LogInformation ("User logged in.");
+                var loginResult = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, model.LockoutOnFailure);
+                if (loginResult.Succeeded)
+                {
+                    _logger.LogInformation("User logged in.");
                     result.IsSuccess = true;
                     result.Message = "User logged in.";
-                } else if (loginResult.IsLockedOut) {
-                    _logger.LogWarning ("User account locked out.");
+                }
+                else if (loginResult.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
                     result.Message = "User account locked out.";
                     result.Type = LoginResultType.LockOut;
-                } else if (loginResult.RequiresTwoFactor) {
+                }
+                else if (loginResult.RequiresTwoFactor)
+                {
                     result.Message = "User logged in requiresTwoFactor";
                     result.Type = LoginResultType.TwoFactor;
                 }
                 return result;
-            } catch (Exception ex) {
-                _logger.Log (LogLevel.Error, $"ECommerce.Service.Services.Login Exception:{ex} ");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, $"ECommerce.Service.Services.Login Exception:{ex} ");
                 return result;
             }
         }
