@@ -37,36 +37,45 @@ namespace ECommerce.Service.Services {
                 Status = RegisterStatus.Fail
             };
 
-            var validator = new RegisterValidator ();
-            ValidationResult validationResult = validator.Validate (model);
+            try {
+                var validator = new RegisterValidator ();
+                ValidationResult validationResult = validator.Validate (model);
 
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            var registerResult = await _userManager.CreateAsync (user, model.Password);
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var registerResult = await _userManager.CreateAsync (user, model.Password);
 
-            if (registerResult.Succeeded) {
-
-                _logger.LogInformation ("User created a new account with password.");
-
-                if(model.UseEmailVerified){
-                // var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
-                // code = WebEncoders.Base64UrlEncode (Encoding.UTF8.GetBytes (code));
-                // var callbackUrl = model.ReturnUrl + $"?userId={user.Id}&code={code}";
-
-                // await _emailSender.SendEmailAsync (model.Email, "Confirm your email",
-                //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var error = registerResult.Errors.FirstOrDefault ();
+                if (error != null) {
+                    result.Message = error.Description;
+                    return result;
                 }
-                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        result.Status = RegisterStatus.RequireConfirmedAccount;
+
+                if (registerResult.Succeeded) {
+
+                    _logger.LogInformation ("User created a new account with password.");
+
+                    if (model.UseEmailVerified) {
+                        // var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
+                        // code = WebEncoders.Base64UrlEncode (Encoding.UTF8.GetBytes (code));
+                        // var callbackUrl = model.ReturnUrl + $"?userId={user.Id}&code={code}";
+
+                        // await _emailSender.SendEmailAsync (model.Email, "Confirm your email",
+                        //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                     }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount) {
+                        result.Status = RegisterStatus.RequireConfirmedAccount;
+                    } else {
+                        await _signInManager.SignInAsync (user, isPersistent : false);
                         result.Status = RegisterStatus.Success;
                     }
-            }
+                }
 
-            return result;
+                return result;
+            } catch (Exception ex) {
+
+                _logger.LogError ($"ECommerce.Service.Services.RegisterAsync() Exception:{ex}");
+                return result;
+            }
         }
 
         /// <summary>

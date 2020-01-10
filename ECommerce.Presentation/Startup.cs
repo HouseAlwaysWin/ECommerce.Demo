@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.Design;
 using ECommerce.Repository.Data;
 using ECommerce.Service.Services;
 using ECommerce.Service.Services.Interfaces;
@@ -29,7 +30,17 @@ namespace ECommerce.Presentation {
                     b => b.MigrationsAssembly ("ECommerce.Presentation")));
 
             services.AddIdentity<IdentityUser, IdentityRole> (
-                    options => options.SignIn.RequireConfirmedAccount = true)
+                    options => {
+                        options.SignIn.RequireConfirmedAccount = false;
+                        options.SignIn.RequireConfirmedEmail = false;
+                        options.SignIn.RequireConfirmedPhoneNumber = false;
+                        options.Password.RequireLowercase = false;
+                        options.Password.RequireNonAlphanumeric = false;
+                        options.Password.RequireUppercase = false;
+                        options.Password.RequiredLength = 6;
+                        options.Lockout.AllowedForNewUsers = false;
+                    }
+                )
                 .AddEntityFrameworkStores<ApplicationDbContext> ();
 
             services.AddControllersWithViews ();

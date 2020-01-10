@@ -18,6 +18,6 @@ namespace ECommerce.Domain.ViewModels {
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; } = "/";
     }
 }

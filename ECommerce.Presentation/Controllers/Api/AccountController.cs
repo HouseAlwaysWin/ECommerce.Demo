@@ -14,6 +14,31 @@ namespace ECommerce.Presentation.Controllers.Api {
         }
 
         [HttpPost]
+        [Route ("Login")]
+        public async Task<IActionResult> Login (LoginViewModel model) {
+            model.ReturnUrl = model.ReturnUrl ?? Url.Content ("~/");
+            var result = await _accountService.LoginAsync (new LoginModel {
+                Email = model.Email,
+                    Password = model.Password,
+                    RememberMe = model.RememberMe,
+                    LockoutOnFailure = false,
+            });
+
+            if (result.IsSuccess) {
+                return LocalRedirect (model.ReturnUrl);
+            }
+
+            switch (result.Status) {
+                case LoginStatus.TwoFactor:
+                case LoginStatus.LockOut:
+                    return Ok ();
+            }
+
+            return BadRequest ();
+        }
+
+        [HttpPost]
+        [Route ("Register")]
         public async Task<IActionResult> Register ([FromBody] RegisterViewModel model) {
 
             var registerResult = await _accountService.RegisterAsync (new RegisterModel {
@@ -26,9 +51,11 @@ namespace ECommerce.Presentation.Controllers.Api {
 
             switch (registerResult.Status) {
                 case RegisterStatus.Success:
-                    return LocalRedirect (model.ReturnUrl);
                 case RegisterStatus.RequireConfirmedAccount:
-                    return RedirectToPage ("RegisterConfirmation", new { email = model.Email });
+                    return Ok (new {
+                        isSuccess = true,
+                            redirectUrl = model.ReturnUrl
+                    });
                 case RegisterStatus.Fail:
                     return BadRequest ();
             }

@@ -36,7 +36,7 @@ var registerVue = new Vue({
       console.log(data);
       axios.post('/api/Account/Register', data)
         .then(function (response) {
-
+          console.log(response);
         }).catch(function (ex) {
 
         })
