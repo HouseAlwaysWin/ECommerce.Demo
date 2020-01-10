@@ -25,13 +25,14 @@ namespace ECommerce.Presentation.Controllers.Api {
             });
 
             if (result.IsSuccess) {
-                return LocalRedirect (model.ReturnUrl);
-            }
 
-            switch (result.Status) {
-                case LoginStatus.TwoFactor:
-                case LoginStatus.LockOut:
-                    return Ok ();
+                switch (result.Status) {
+                    case LoginStatus.Success:
+                        return Ok ();
+                    case LoginStatus.TwoFactor:
+                    case LoginStatus.LockOut:
+                        return Ok ();
+                }
             }
 
             return BadRequest ();

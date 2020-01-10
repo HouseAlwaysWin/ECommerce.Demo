@@ -87,7 +87,7 @@ namespace ECommerce.Service.Services {
 
             LoginResultModel result = new LoginResultModel () {
                 IsSuccess = false,
-                Type = LoginResultType.Default
+                Status = LoginStatus.Fail
             };
 
             try {
@@ -109,10 +109,10 @@ namespace ECommerce.Service.Services {
                 } else if (loginResult.IsLockedOut) {
                     _logger.LogWarning ("User account locked out.");
                     result.Message = "User account locked out.";
-                    result.Type = LoginResultType.LockOut;
+                    result.Status = LoginStatus.LockOut;
                 } else if (loginResult.RequiresTwoFactor) {
                     result.Message = "User logged in requiresTwoFactor";
-                    result.Type = LoginResultType.TwoFactor;
+                    result.Status = LoginStatus.TwoFactor;
                 }
                 return result;
             } catch (Exception ex) {
