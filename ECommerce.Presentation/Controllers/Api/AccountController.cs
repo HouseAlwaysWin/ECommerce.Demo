@@ -6,17 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.Presentation.Controllers.Api
 {
+
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-
         private readonly IAccountService _accountService;
-
         public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
         }
+
+
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
+        [Route("Register")]
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
 
             var registerResult = await _accountService.RegisterAsync(new RegisterModel
@@ -35,10 +38,10 @@ namespace ECommerce.Presentation.Controllers.Api
                 case RegisterStatus.RequireConfirmedAccount:
                     return RedirectToPage("RegisterConfirmation", new { email = model.Email });
                 case RegisterStatus.Fail:
-                    return NotFound();
+                    return BadRequest();
             }
 
-            return NotFound();
+            return BadRequest();
         }
     }
 }

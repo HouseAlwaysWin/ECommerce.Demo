@@ -25,20 +25,18 @@ var registerVue = new Vue({
   methods: {
     validateForm: function() {},
     onSubmit: function() {
-      alert("submit");
       var self = this;
       var data = {
         Username: self.email,
         Email: self.email,
         Password: self.password,
-        ConfirmPassword: self.confirmPassword,
-        ExternalLogins: [],
-        ReturnUrl: "/"
+        ConfirmPassword: self.confirmPassword
       };
       console.log(data);
-      axios.post("/Account/Register", data).then(function(response) {
-        console.log(response);
-      });
+      axios
+        .post("/api/Account/Register", data)
+        .then(function(response) {})
+        .catch(function(ex) {});
     }
   }
 });

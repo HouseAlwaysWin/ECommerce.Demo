@@ -18,15 +18,36 @@ namespace ECommerce.Presentation.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
-        {
-            return View(new RegisterViewModel());
+        public IActionResult Register () {
+            return View (new RegisterViewModel ());
         }
 
+        // [HttpPost]
+        // public async Task<IActionResult> Register (RegisterViewModel model) {
+
+        //     var registerResult = await _accountService.RegisterAsync (new RegisterModel {
+        //         Email = model.Email,
+        //             Password = model.Password,
+        //             ConfirmPassword = model.ConfirmPassword,
+        //             ReturnUrl = model.ReturnUrl,
+        //             UseEmailVerified=false 
+        //     });
+
+        //     switch(registerResult.Status){
+        //         case RegisterStatus.Success:
+        //             return LocalRedirect(model.ReturnUrl);
+        //         case RegisterStatus.RequireConfirmedAccount:
+        //              return RedirectToPage("RegisterConfirmation", new { email = model.Email });
+        //         case RegisterStatus.Fail:
+        //             return View(); 
+        //     }
+
+        //     return View ();
+        // }
+
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View(new LoginViewModel());
+        public IActionResult Login () {
+            return View (new LoginViewModel ());
         }
 
         [HttpPost]
