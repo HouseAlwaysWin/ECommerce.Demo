@@ -23,7 +23,6 @@ var registerVue = new Vue({
     confirmPassword: ""
   },
   methods: {
-    validateForm: function() {},
     onSubmit: function() {
       var self = this;
       var data = {
@@ -35,7 +34,9 @@ var registerVue = new Vue({
       console.log(data);
       axios
         .post("/api/Account/Register", data)
-        .then(function(response) {})
+        .then(function(response) {
+          console.log(response);
+        })
         .catch(function(ex) {});
     }
   }

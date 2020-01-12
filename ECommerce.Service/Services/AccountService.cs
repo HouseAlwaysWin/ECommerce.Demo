@@ -42,45 +42,53 @@ namespace ECommerce.Service.Services
                 Status = RegisterStatus.Fail
             };
 
-            var validator = new RegisterValidator();
-            ValidationResult validationResult = validator.Validate(model);
-
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            var registerResult = await _userManager.CreateAsync(user, model.Password);
-            var errors = registerResult.Errors;
-
-            if (errors.Count() > 0)
+            try
             {
-                result.Message = errors.FirstOrDefault().Description;
+                var validator = new RegisterValidator();
+                ValidationResult validationResult = validator.Validate(model);
+
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var registerResult = await _userManager.CreateAsync(user, model.Password);
+
+                if (registerResult.Errors.Count() != 0)
+                {
+                    var error = registerResult.Errors.FirstOrDefault();
+                    result.Message = error.Description;
+                    return result;
+                }
+
+                if (registerResult.Succeeded)
+                {
+
+                    _logger.LogInformation("User created a new account with password.");
+
+                    if (model.UseEmailVerified)
+                    {
+                        // var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
+                        // code = WebEncoders.Base64UrlEncode (Encoding.UTF8.GetBytes (code));
+                        // var callbackUrl = model.ReturnUrl + $"?userId={user.Id}&code={code}";
+
+                        // await _emailSender.SendEmailAsync (model.Email, "Confirm your email",
+                        //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    }
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        result.Status = RegisterStatus.RequireConfirmedAccount;
+                    }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        result.Status = RegisterStatus.Success;
+                    }
+                }
+
                 return result;
             }
-
-            if (registerResult.Succeeded)
+            catch (Exception ex)
             {
-
-                _logger.LogInformation("User created a new account with password.");
-
-                if (model.UseEmailVerified)
-                {
-                    // var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
-                    // code = WebEncoders.Base64UrlEncode (Encoding.UTF8.GetBytes (code));
-                    // var callbackUrl = model.ReturnUrl + $"?userId={user.Id}&code={code}";
-
-                    // await _emailSender.SendEmailAsync (model.Email, "Confirm your email",
-                    //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                }
-                if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                {
-                    result.Status = RegisterStatus.RequireConfirmedAccount;
-                }
-                else
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    result.Status = RegisterStatus.Success;
-                }
+                _logger.LogError($"ECommerce.Service.Services.RegisterAsync() Exception:{ex}");
+                return result;
             }
-
-            return result;
         }
 
         /// <summary>
@@ -93,8 +101,7 @@ namespace ECommerce.Service.Services
 
             LoginResultModel result = new LoginResultModel()
             {
-                IsSuccess = false,
-                Type = LoginResultType.Default
+                Status = LoginStatus.Fail,
             };
 
             try
@@ -113,26 +120,26 @@ namespace ECommerce.Service.Services
                 var loginResult = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, model.LockoutOnFailure);
                 if (loginResult.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
-                    result.IsSuccess = true;
-                    result.Message = "User logged in.";
+                    result.Status = LoginStatus.Success;
+                    result.Message = "Successed";
                 }
                 else if (loginResult.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
-                    result.Message = "User account locked out.";
-                    result.Type = LoginResultType.LockOut;
+                    result.Status = LoginStatus.LockOut;
+                    result.Message = "LockedOut";
                 }
                 else if (loginResult.RequiresTwoFactor)
                 {
-                    result.Message = "User logged in requiresTwoFactor";
-                    result.Type = LoginResultType.TwoFactor;
+                    result.Status = LoginStatus.TwoFactor;
+                    result.Message = "TwoFactor";
                 }
                 return result;
             }
             catch (Exception ex)
             {
                 _logger.Log(LogLevel.Error, $"ECommerce.Service.Services.Login Exception:{ex} ");
+                result.Status = LoginStatus.Fail;
+                result.Message = "Failed";
                 return result;
             }
         }

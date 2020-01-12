@@ -9,7 +9,7 @@ namespace ECommerce.Domain.ViewModels {
 
         public bool RememberMe { get; set; }
 
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; } = "/";
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
