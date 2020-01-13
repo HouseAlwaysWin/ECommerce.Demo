@@ -23,7 +23,7 @@ var registerVue = new Vue({
     confirmPassword: ""
   },
   methods: {
-    onSubmit: function() {
+    onSubmit: function () {
       var self = this;
       var data = {
         Username: self.email,
@@ -31,13 +31,22 @@ var registerVue = new Vue({
         Password: self.password,
         ConfirmPassword: self.confirmPassword
       };
-      console.log(data);
-      axios
-        .post("/api/Account/Register", data)
-        .then(function(response) {
+
+      axios.post("/api/Account/Register", data)
+        .then(function (response) {
           console.log(response);
-        })
-        .catch(function(ex) {});
+          vueModal.show({
+            titleText: "訊息",
+            bodyText: response.data.message,
+            cancelBtnText: false
+          }).then(function (result) {
+            if (result && response.data.isSuccess) {
+              location.href = response.data.redirectUrl;
+            }
+          });
+        }).catch(function (error) {
+          console.log(error.response);
+        });
     }
   }
 });

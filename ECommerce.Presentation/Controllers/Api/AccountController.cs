@@ -4,98 +4,88 @@ using ECommerce.Domain.ViewModels;
 using ECommerce.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ECommerce.Presentation.Controllers.Api
-{
+namespace ECommerce.Presentation.Controllers.Api {
 
-    [Route("api/[controller]")]
-    public class AccountController : ControllerBase
-    {
+    [Route ("api/[controller]")]
+    public class AccountController : ControllerBase {
         private readonly IAccountService _accountService;
-        public AccountController(IAccountService accountService)
-        {
+        public AccountController (IAccountService accountService) {
             _accountService = accountService;
         }
 
-
         [HttpPost]
-        [Route("Login")]
-        public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            model.ReturnUrl = model.ReturnUrl ?? Url.Content("~/");
-            var result = await _accountService.LoginAsync(new LoginModel
-            {
+        [Route ("Login")]
+        public async Task<IActionResult> Login (LoginViewModel model) {
+            model.ReturnUrl = model.ReturnUrl ?? Url.Content ("~/");
+            var result = await _accountService.LoginAsync (new LoginModel {
                 Email = model.Email,
-                Password = model.Password,
-                RememberMe = model.RememberMe,
-                LockoutOnFailure = false,
+                    Password = model.Password,
+                    RememberMe = model.RememberMe,
+                    LockoutOnFailure = false,
             });
 
-            switch (result.Status)
-            {
+            switch (result.Status) {
                 case LoginStatus.Success:
-                    return Ok(new
-                    {
+                    return Ok (new {
                         isSuccessed = true,
-                        RedirectUrl = model.ReturnUrl
+                            redirectUrl = model.ReturnUrl
                     });
                 case LoginStatus.TwoFactor:
-                    return Ok(new
-                    {
+                    return Ok (new {
                         isSuccessed = true,
-                        RedirectUrl = Url.Content("~/LoginWith2fa")
+                            redirectUrl = Url.Content ("~/LoginWith2fa")
                     });
                 case LoginStatus.LockOut:
-                    return Ok(new
-                    {
+                    return Ok (new {
                         isSuccessed = true,
-                        RedirectUrl = Url.Content("~/Lockout")
+                            redirectUrl = Url.Content ("~/Lockout")
                     });
                 case LoginStatus.Fail:
                 default:
-                    return BadRequest(new
-                    {
+                    return BadRequest (new {
                         isSuccess = false,
-                        Message = result.Message,
-                        redirectUrl = Url.Content("~/")
+                            Message = result.Message,
+                            redirectUrl = Url.Content ("~/")
                     });
             }
         }
 
         [HttpPost]
-        [Route("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
-        {
+        [Route ("Register")]
+        public async Task<IActionResult> Register ([FromBody] RegisterViewModel model) {
+            model.ReturnUrl = model.ReturnUrl ?? Url.Content ("~/");
 
-            var registerResult = await _accountService.RegisterAsync(new RegisterModel
-            {
+            var registerResult = await _accountService.RegisterAsync (new RegisterModel {
                 Email = model.Email,
-                Password = model.Password,
-                ConfirmPassword = model.ConfirmPassword,
-                ReturnUrl = model.ReturnUrl,
-                UseEmailVerified = false
+                    Password = model.Password,
+                    ConfirmPassword = model.ConfirmPassword,
+                    ReturnUrl = model.ReturnUrl,
+                    UseEmailVerified = false
             });
 
-            switch (registerResult.Status)
-            {
+            switch (registerResult.Status) {
                 case RegisterStatus.Success:
-                case RegisterStatus.RequireConfirmedAccount:
-                    return Ok(new
-                    {
+                    return Ok (new {
                         isSuccess = true,
-                        redirectUrl = model.ReturnUrl
+                            redirectUrl = model.ReturnUrl,
+                    });
+
+                case RegisterStatus.RequireConfirmedAccount:
+                    return Ok (new {
+                        isSuccess = true,
+                            redirectUrl = model.ReturnUrl
                     });
                 case RegisterStatus.Fail:
-                    return BadRequest(new
-                    {
+                    return Ok (new {
                         isSuccess = false,
-                        redirectUrl = model.ReturnUrl
+                            redirectUrl = model.ReturnUrl,
+                            message = registerResult.Message
                     });
             }
 
-            return BadRequest(new
-            {
+            return BadRequest (new {
                 isSuccess = false,
-                redirectUrl = model.ReturnUrl
+                    redirectUrl = model.ReturnUrl
             });
         }
     }
