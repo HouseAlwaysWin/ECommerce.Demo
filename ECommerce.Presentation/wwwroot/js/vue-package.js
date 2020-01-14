@@ -12035,7 +12035,7 @@ var vueModal = new Vue({
         modalShowInfo: {
             title: true,
             confirmBtn: true,
-            cancelBtn: true
+            cancelBtn: false
         },
         modelEvent: {
             confirm: null,
@@ -12057,9 +12057,9 @@ var vueModal = new Vue({
             };
 
             self.modalShowInfo = {
-                title: options.showTitleText || true,
-                confirmBtn: options.showConfirmBtn || true,
-                cancelBtn: options.showCancelBtn || true
+                title: options.showTitleText || self.modalShowInfo.title,
+                confirmBtn: options.showConfirmBtn || self.modalShowInfo.confirmBtn,
+                cancelBtn: options.showCancelBtn || self.modalShowInfo.cancelBtn
             };
 
             return new Promise(function (resolve, reject) {
@@ -12098,8 +12098,11 @@ var vueModal = new Vue({
                 modalShowInfo: {
                     title: true,
                     confirmBtn: true,
-                    cancelBtn: true
+                    cancelBtn: false
                 },
+                modelEvent: {
+                    confirm: null,
+                }
             }
         }
     }

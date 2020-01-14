@@ -35,17 +35,26 @@ var registerVue = new Vue({
       axios.post("/api/Account/Register", data)
         .then(function (response) {
           console.log(response);
-          vueModal.show({
-            titleText: "訊息",
-            bodyText: response.data.message,
-            cancelBtnText: false
-          }).then(function (result) {
-            if (result && response.data.isSuccess) {
-              location.href = response.data.redirectUrl;
-            }
-          });
+          if (response.data.isSuccess) {
+            vueModal.show({
+              titleText: "訊息",
+              bodyText: response.data.message,
+            }).then(function (result) {
+              if (result) {
+                location.href = response.data.redirectUrl;
+              }
+            });
+          } else {
+            vueModal.show({
+              titleText: "請修正錯誤",
+              bodyText: response.data.message,
+            });
+          }
         }).catch(function (error) {
-          console.log(error.response);
+          vueModal.show({
+            titleText: "發生錯誤",
+            bodyText: response.data.message,
+          });
         });
     }
   }
