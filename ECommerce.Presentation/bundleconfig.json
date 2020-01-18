@@ -1,8 +1,9 @@
-[
-  {
+[{
     "outputFileName": "wwwroot/js/vue-package.js",
     "inputFiles": [
+      "wwwroot/lib/polyfill.min.js",
       "wwwroot/lib/vue/vue.dev.js",
+      "wwwroot/js/shared/modal.js",
       "wwwroot/lib/vee-validate/dist/vee-validate.full.js",
       "wwwroot/lib/vee-validate/dist/locale_JS/zh_TW.js",
       "wwwroot/lib/vue-i18n/dist/vue-i18n.js",

@@ -36,10 +36,17 @@ var loginVue = new Vue({
       axios.post('/Api/Account/Login', data)
         .then(function (response) {
           console.log(response);
+          vueModal.show({
+            titleText: "訊息",
+            bodyText: response.data.message,
+          }).then(function (result) {
+            if (result) {
+              location.href = response.data.redirectUrl;
+            }
+          });
         }).catch(function (errors) {
           console.log(errors);
         });
-
     }
   }
 });
