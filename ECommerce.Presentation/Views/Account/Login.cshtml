@@ -4,27 +4,28 @@
     ViewData["Title"] = "Log in";
 }
 
+
 <h1>@ViewData["Title"]</h1>
 <div class="row" id="loginVue">
-    <div class="col-md-4">
+    <div class="col-md-4" v-cloak>
         <section>
-            <validation-observer v-slot="{ handleSubmit }">
-            <form id="account" v-on:submit.prevent="handleSubmit(onSubmit)">
+             <ValidationObserver v-slot="{ handleSubmit }"> 
+            <form  v-on:submit.prevent="handleSubmit(onSubmit)" >
                 <h4>Use a local account to log in.</h4>
                 <hr />
-                <div class="form-group">
+                <div class="form-group" >
                     <label for="">Email</label>
-                    <validation rules="required" name="email" v-slot="{ errors }">
+                    <ValidationProvider rules="required|email" name="email" v-slot="{ errors }">
                     <input v-model="email" type="text"  class="form-control" />
-                    <span  class="text-danger">{{ errors[0] }}</span>
-                    </validation>
+                    <span  class="text-danger" >{{ errors[0] }}</span>
+                    </ValidationProvider>
                 </div>
-                <div class="form-group">
+                <div class="form-group" >
                     <label for="">Password</label>
-                    <validation rules="required" name="password" v-slot="{ errors }">
+                    <ValidationProvider rules="required" name="password" v-slot="{ errors }">
                     <input v-model="password" type="password"  class="form-control" />
-                    <span  class="text-danger">{{ errors[0] }}</span>
-                    </validation>
+                    <span  class="text-danger" >{{ errors[0] }}</span>
+                    </ValidationProvider>
                 </div>
                 <div class="form-group">
                     <div class="checkbox">
@@ -46,7 +47,7 @@
                     </p>
                 </div>
             </form>
-            </validation-observer>
+            </ValidationObserver> 
         </section>
     </div>
     <div class="col-md-6 col-md-offset-2">
@@ -82,14 +83,19 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-
+    @* <partial name="_ValidationScriptsPartial" /> *@
+@* 
 <environment include="Development">
     <script  src="~/js/account/login.js" asp-append-version="true"></script>
 </environment>
 <environment include="Product">
     <script  src="~/js/account/login.min.js" asp-append-version="true"></script>
 </environment>
-
+ *@
+  <script>
+        $(window).on('load', function () {
+            MyWebApp.login();
+        });           
+    </script>
 
 }

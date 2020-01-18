@@ -19,7 +19,7 @@ namespace ECommerce.Presentation.Controllers.Api
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login([FromBody]LoginViewModel model)
         {
             model.ReturnUrl = model.ReturnUrl ?? Url.Content("~/");
             var result = await _accountService.LoginAsync(new LoginModel

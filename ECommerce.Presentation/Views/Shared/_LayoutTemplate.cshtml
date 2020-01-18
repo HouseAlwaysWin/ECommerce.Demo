@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ECommerce.Demo</title>
-    
-    <link href="/dist/style.css" rel="stylesheet" />
-    
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+    <link href="<%= htmlWebpackPlugin.files.chunks[chunk].css %>" rel="stylesheet" />
+    <% } %>
   
 </head>
 <body data-controller="@ViewContext.RouteData.Values["Controller"]" data-action="@ViewContext.RouteData.Values["Action"]">
@@ -45,9 +45,9 @@
         </div>
     </footer>
 
-    
-    <script src="/dist/main.js"></script>
-    
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+    <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+    <% } %>
  
 
     @RenderSection("Scripts", required: false)
