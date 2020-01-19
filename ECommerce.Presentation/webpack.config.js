@@ -3,6 +3,7 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 module.exports = (env = {}, argv = {}) => {
   const isProd = process.env.NODE_ENV && process.env.NODE_ENV === "production";
@@ -45,7 +46,8 @@ module.exports = (env = {}, argv = {}) => {
         //	baseHref: BaseConfig.baseUriPath,
         //	appName: AppConfig.App.Title
         //}
-      })
+      }),
+      new VueLoaderPlugin()
     ],
     module: {
       rules: [

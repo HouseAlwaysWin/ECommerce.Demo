@@ -6,6 +6,7 @@ import VeeValidate, {
 } from "vee-validate";
 import * as rules from "vee-validate/dist/rules";
 import zh_TW from "vee-validate/dist/locale/zh_TW.json";
+import { modal } from "../shared/modal.js";
 
 Object.keys(rules).forEach(rule => {
   extend(rule, rules[rule]);
@@ -46,7 +47,11 @@ export const login = function() {
         axios
           .post("/Api/Account/Login", data)
           .then(function(response) {
-            console.log(response);
+            console.log(response.data);
+            if (response.data.isSuccessed) {
+              console.log(response.data.redirectUrl);
+              location.href = response.data.redirectUrl;
+            }
           })
           .catch(function(errors) {
             console.log(errors);

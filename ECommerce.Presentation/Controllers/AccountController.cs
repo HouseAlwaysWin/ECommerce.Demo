@@ -11,20 +11,48 @@ namespace ECommerce.Presentation.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
-        private readonly SignInManager<IdentityUser> _signInManager;
         public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
         }
 
         [HttpGet]
-        public IActionResult Register () {
-            return View (new RegisterViewModel ());
+        public IActionResult Register()
+        {
+            return View(new RegisterViewModel());
         }
-      
+
         [HttpGet]
-        public IActionResult Login () {
-            return View (new LoginViewModel ());
+        public IActionResult Login()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View(new LoginViewModel());
+        }
+
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Logout(string returnUrl = null)
+        {
+            await _accountService.LogoutAsync();
+            // _logger.LogInformation("User logged out.");
+            if (returnUrl != null)
+            {
+                return LocalRedirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
 

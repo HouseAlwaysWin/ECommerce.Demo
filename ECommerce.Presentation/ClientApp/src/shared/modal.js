@@ -28,16 +28,20 @@ var modal = new Vue({
 
       self.modalStyleObj.display = "block";
       self.modalText = {
-        title: options.titleText || self.modalText.title,
-        body: options.bodyText || self.modalText.body,
-        confirmBtn: options.confirmBtnText || self.modalText.confirmBtn,
-        cancelBtn: options.cancelBtnText || self.modalText.cancelBtn
+        title: options?.title ? options.title : self.modalText.title,
+        body: options?.body ? options.body : self.modalText.body,
+        confirmBtn: options?.confirmBtn
+          ? options.confirmBtn
+          : self.modalText.confirmBtn,
+        cancelBtn: options?.cancelBtn
+          ? options.cancelBtn
+          : self.modalText.cancelBtn
       };
 
       self.modalShowInfo = {
-        title: options.showTitleText || self.modalShowInfo.title,
-        confirmBtn: options.showConfirmBtn || self.modalShowInfo.confirmBtn,
-        cancelBtn: options.showCancelBtn || self.modalShowInfo.cancelBtn
+        title: options?.showTitle ?? self.modalShowInfo.title,
+        confirmBtn: options?.showConfirmBtn ?? self.modalShowInfo.confirmBtn,
+        cancelBtn: options?.showCancelBtn ?? self.modalShowInfo.cancelBtn
       };
 
       return new Promise(function(resolve, reject) {
@@ -85,3 +89,5 @@ var modal = new Vue({
     }
   }
 });
+
+export { modal };
