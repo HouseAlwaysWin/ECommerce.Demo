@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = (env = {}, argv = {}) => {
   const isProd = process.env.NODE_ENV && process.env.NODE_ENV === "production";
@@ -47,7 +48,10 @@ module.exports = (env = {}, argv = {}) => {
         //	appName: AppConfig.App.Title
         //}
       }),
-      new VueLoaderPlugin()
+      new VueLoaderPlugin(),
+      new CleanWebpackPlugin({
+        cleanAfterEveryBuildPatterns: ["dist"]
+      })
     ],
     module: {
       rules: [

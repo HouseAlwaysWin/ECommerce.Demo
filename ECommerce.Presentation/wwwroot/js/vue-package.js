@@ -12044,6 +12044,7 @@ var modal = new Vue({
   methods: {
     show: function(options) {
       var self = this;
+      self.modalStyleObj.show = true;
       if (self.modalStyleObj.display === "block") {
         return;
       }

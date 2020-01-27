@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 
-namespace ECommerce.Domain.Models
+namespace ECommerce.Domain.Models.Account
 {
 
-   
+
     public class RegisterModel
     {
         public string Email { get; set; }
@@ -13,10 +13,10 @@ namespace ECommerce.Domain.Models
 
         public string ConfirmPassword { get; set; }
 
-        public string ReturnUrl { get; set; } 
+        public string ReturnUrl { get; set; }
 
-        public bool UseEmailVerified {get;set;}
-        
+        public bool UseEmailVerified { get; set; }
+
 
     }
 }

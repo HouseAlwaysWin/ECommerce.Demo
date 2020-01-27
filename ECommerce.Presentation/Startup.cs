@@ -35,6 +35,11 @@ namespace ECommerce.Presentation
                    Configuration.GetConnectionString("DefaultConnection"),
                    b => b.MigrationsAssembly("ECommerce.Presentation")));
 
+            services.AddDbContext<IdentityDataContext>(options =>
+               options.UseSqlServer(
+                   Configuration.GetConnectionString("DefaultConnection"),
+                   b => b.MigrationsAssembly("ECommerce.Presentation")));
+
             services.AddIdentity<IdentityUser, IdentityRole>(
                     options =>
                     {
@@ -50,7 +55,7 @@ namespace ECommerce.Presentation
                 )
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
@@ -79,6 +84,10 @@ namespace ECommerce.Presentation
                 {
                     HotModuleReplacement = true
                 });
+                // app.UseSpa(spa =>
+                // {
+                //     spa.UseProxyToSpaDevelopmentServer("http://localhost:8080");
+                // });
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }

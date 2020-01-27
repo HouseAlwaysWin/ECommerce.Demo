@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using ECommerce.Domain.Models;
+using ECommerce.Domain.Models.Account;
 
 namespace ECommerce.Service.Services.Interfaces
 {

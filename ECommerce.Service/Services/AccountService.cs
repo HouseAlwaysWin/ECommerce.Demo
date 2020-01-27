@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using ECommerce.Domain.Models;
+using ECommerce.Domain.Models.Account;
 using ECommerce.Service.ModelValidations;
 using ECommerce.Service.Services.Interfaces;
 using FluentValidation.Results;
@@ -109,16 +109,10 @@ namespace ECommerce.Service.Services
             {
                 var validator = new LoginValidator();
                 ValidationResult validationResult = validator.Validate(model);
-
-                if (!validationResult.IsValid)
-                {
-                    result.Message = validationResult.Errors.FirstOrDefault().ErrorMessage;
-                    return result;
-                }
-
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var loginResult = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, model.LockoutOnFailure);
+
                 if (loginResult.Succeeded)
                 {
                     result.Status = LoginStatus.Success;
@@ -132,6 +126,11 @@ namespace ECommerce.Service.Services
                 else if (loginResult.RequiresTwoFactor)
                 {
                     result.Status = LoginStatus.TwoFactor;
+                    result.Message = "TwoFactor";
+                }
+                else if (loginResult.IsNotAllowed)
+                {
+                    result.Status = LoginStatus.Fail;
                     result.Message = "TwoFactor";
                 }
                 return result;

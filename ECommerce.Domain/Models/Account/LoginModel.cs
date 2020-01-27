@@ -1,6 +1,8 @@
-namespace ECommerce.Domain.Models {
+namespace ECommerce.Domain.Models.Account
+{
 
-    public class LoginModel {
+    public class LoginModel
+    {
 
         public string Email { get; set; }
 

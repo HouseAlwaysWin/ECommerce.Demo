@@ -1,4 +1,4 @@
-namespace ECommerce.Domain.Models
+namespace ECommerce.Domain.Models.Account
 {
 
     public enum LoginStatus

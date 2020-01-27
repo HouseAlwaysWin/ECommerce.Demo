@@ -29,7 +29,8 @@ export const login = function() {
     data: {
       email: "",
       password: "",
-      rememberMe: false
+      rememberMe: false,
+      loading: false
     },
     components: {
       validationobserver: ValidationObserver,
@@ -44,17 +45,32 @@ export const login = function() {
           Password: self.password,
           RememberMe: self.rememberMe
         };
+        self.loading = true;
         axios
           .post("/Api/Account/Login", data)
           .then(function(response) {
             console.log(response.data);
             if (response.data.isSuccessed) {
-              console.log(response.data.redirectUrl);
-              location.href = response.data.redirectUrl;
+              modal
+                .show({
+                  title: "Message",
+                  body: "Login Successed"
+                })
+                .then(function() {
+                  location.href = response.data.redirectUrl;
+                  self.loading = false;
+                });
+            } else {
+              modal.show({
+                title: "Message",
+                body: "Email or Password is not correct"
+              });
             }
+            self.loading = false;
           })
           .catch(function(errors) {
             console.log(errors);
+            self.loading = false;
           });
       }
     }

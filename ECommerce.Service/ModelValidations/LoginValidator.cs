@@ -1,4 +1,4 @@
-using ECommerce.Domain.Models;
+using ECommerce.Domain.Models.Account;
 using FluentValidation;
 
 namespace ECommerce.Service.ModelValidations

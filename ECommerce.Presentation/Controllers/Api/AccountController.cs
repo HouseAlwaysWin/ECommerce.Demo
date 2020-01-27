@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using ECommerce.Domain.Models;
+using ECommerce.Domain.Models.Account;
 using ECommerce.Domain.ViewModels;
 using ECommerce.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -52,7 +52,7 @@ namespace ECommerce.Presentation.Controllers.Api
                     });
                 case LoginStatus.Fail:
                 default:
-                    return BadRequest(new
+                    return Ok(new
                     {
                         isSuccess = false,
                         Message = result.Message,
