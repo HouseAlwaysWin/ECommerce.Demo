@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using ECommerce.Domain.Entities.ImageEntity;
 using ECommerce.Domain.Entities.ProductEntity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -16,15 +17,15 @@ namespace ECommerce.Repository.Data
 
         public virtual DbSet<Product> Product { get; set; }
 
-        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<ProductCategory> ProductCategory { get; set; }
+
+        public virtual DbSet<ImageInfo> ImageInfo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             #region  Prodcut
             var product = builder.Entity<Product>();
-            product.HasKey(p => p.ID).IsClustered();
-            product.HasOne(p => p.Category).WithMany(c => c.Products)
-                    .HasForeignKey(p => p.CategoryId).OnDelete(DeleteBehavior.ClientSetNull);
+            product.HasKey(p => p.ProductId).IsClustered();
             product.Property(p => p.Title).IsRequired();
             product.Property(p => p.Status).IsRequired();
             product.Property(p => p.Price).IsRequired();
@@ -32,16 +33,35 @@ namespace ECommerce.Repository.Data
             product.Property(p => p.CreatedDate).IsRequired();
             #endregion
 
-            #region  Category
-            var category = builder.Entity<Category>();
-            category.HasKey(c => c.ID).IsClustered();
-            category.HasAlternateKey(c => c.Guid);
-            category.HasMany(c => c.Childs).WithOne(c => c.Parent)
+            #region  ProductCategory
+            var productCategory = builder.Entity<ProductCategory>();
+            productCategory.HasKey(c => c.ProductCategoryId).IsClustered();
+            productCategory.HasAlternateKey(c => c.Guid);
+            productCategory.HasMany(c => c.Childs).WithOne(c => c.Parent)
                     .HasForeignKey(c => c.ParentId).HasPrincipalKey(c => c.Guid).OnDelete(DeleteBehavior.ClientSetNull);
-            category.Property(c => c.Name).IsRequired().HasMaxLength(100);
-            category.HasAlternateKey(c => c.Guid);
-            category.Property(c => c.EditedDate).IsRequired();
-            category.Property(c => c.CreatedDate).IsRequired();
+            productCategory.Property(c => c.Name).IsRequired().HasMaxLength(100);
+            productCategory.HasAlternateKey(c => c.Guid);
+            productCategory.Property(c => c.EditedDate).IsRequired();
+            productCategory.Property(c => c.CreatedDate).IsRequired();
+            #endregion
+
+            #region ProductCategoryMap
+            var productCategoryMap = builder.Entity<ProductCategoryMap>();
+            productCategoryMap.HasKey(pc => new { pc.ProductId, pc.ProductCategoryId });
+            productCategoryMap
+                .HasOne(pc => pc.Product)
+                .WithMany(c => c.ProductCategoryMaps)
+                .HasForeignKey(p => p.ProductCategoryId).OnDelete(DeleteBehavior.ClientSetNull);
+            productCategoryMap
+                .HasOne(pc => pc.ProductCategory)
+                .WithMany(p => p.ProductCategoryMaps)
+                .HasForeignKey(c => c.ProductId).OnDelete(DeleteBehavior.ClientSetNull);
+            #endregion
+
+            #region ImageInfo
+            var imageInfo = builder.Entity<ImageInfo>();
+            imageInfo.HasKey(i => i.ID);
+
             #endregion
         }
 

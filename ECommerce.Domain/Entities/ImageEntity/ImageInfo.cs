@@ -10,8 +10,7 @@ namespace ECommerce.Domain.Entities.ImageEntity
 
     public class ImageInfo
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
+        public int ImageInfoID { get; set; }
         public string Url { get; set; }
         public ImageStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }

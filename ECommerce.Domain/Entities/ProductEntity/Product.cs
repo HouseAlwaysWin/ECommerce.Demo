@@ -13,7 +13,7 @@ namespace ECommerce.Domain.Entities.ProductEntity
     }
     public class Product
     {
-        public int ID { get; set; }
+        public int ProductId { get; set; }
 
         public string Title { get; set; }
         public string SubTitle { get; set; }
@@ -23,13 +23,10 @@ namespace ECommerce.Domain.Entities.ProductEntity
         public ProductStatus Status { get; set; }
         public DateTime EditedDate { get; set; }
         public DateTime CreatedDate { get; set; }
-
-
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public virtual ICollection<ProductCategoryMap> ProductCategoryMaps { get; set; }
 
         public int ImageId { get; set; }
-        public ICollection<ImageInfo> ImagesInfo { get; set; }
+        public virtual ICollection<ImageInfo> ImagesInfo { get; set; }
 
     }
 }

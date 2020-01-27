@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace ECommerce.Domain.Entities.ProductEntity
 {
-    public class Category
+    public class ProductCategory
     {
-        public int ID { get; set; }
+        public int ProductCategoryId { get; set; }
         public Guid Guid { get; set; }
         public string Name { get; set; }
         public bool IsActived { get; set; }
@@ -14,11 +14,10 @@ namespace ECommerce.Domain.Entities.ProductEntity
 
 
         public Guid? ParentId { get; set; }
-        public Category Parent { get; set; }
-        public ICollection<Category> Childs { get; set; }
+        public ProductCategory Parent { get; set; }
+        public virtual ICollection<ProductCategory> Childs { get; set; }
 
-        public int? ProductID { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public virtual ICollection<ProductCategoryMap> ProductCategoryMaps { get; set; }
 
     }
 }
