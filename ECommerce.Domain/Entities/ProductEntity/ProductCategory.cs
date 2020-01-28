@@ -6,7 +6,7 @@ namespace ECommerce.Domain.Entities.ProductEntity
     public class ProductCategory
     {
         public int ProductCategoryId { get; set; }
-        public Guid Guid { get; set; }
+        public Guid ChildId { get; set; }
         public string Name { get; set; }
         public bool IsActived { get; set; }
         public DateTime EditedDate { get; set; }
@@ -17,7 +17,7 @@ namespace ECommerce.Domain.Entities.ProductEntity
         public ProductCategory Parent { get; set; }
         public virtual ICollection<ProductCategory> Childs { get; set; }
 
-        public virtual ICollection<ProductCategoryMap> ProductCategoryMaps { get; set; }
+        public virtual ICollection<Product_ProductCategory> Product_ProductCategory { get; set; }
 
     }
 }

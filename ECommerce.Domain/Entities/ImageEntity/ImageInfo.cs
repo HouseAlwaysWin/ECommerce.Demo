@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
+using ECommerce.Domain.Entities.ProductEntity;
 
 namespace ECommerce.Domain.Entities.ImageEntity
 {
-    public enum ImageStatus
+    public enum ImageType
     {
         Product,
         Category,
@@ -10,10 +12,13 @@ namespace ECommerce.Domain.Entities.ImageEntity
 
     public class ImageInfo
     {
-        public int ImageInfoID { get; set; }
+        public int ImageInfoId { get; set; }
         public string Url { get; set; }
-        public ImageStatus Status { get; set; }
+        public ImageType Type { get; set; }
+        public bool IsActived { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime EditedDate { get; set; }
+
+        public ICollection<Product> Products { get; set; }
     }
 }
