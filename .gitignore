@@ -9,3 +9,4 @@ ECommerce.WebApi/ECommerce.Test/obj/
 ECommerce.Presentation/ScaffoldingReadMe.txt
 ECommerce.Presentation/wwwroot/dist
 
+ECommerce.Presentation/package-lock.json
