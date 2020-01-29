@@ -6,7 +6,7 @@ namespace ECommerce.Domain.Entities.ProductEntity
     public class ProductCategory
     {
         public int ProductCategoryId { get; set; }
-        public Guid ChildId { get; set; }
+        public Guid ProductCategoryAkId { get; set; }
         public string Name { get; set; }
         public bool IsActived { get; set; }
         public DateTime EditedDate { get; set; }

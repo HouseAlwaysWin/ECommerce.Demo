@@ -37,6 +37,7 @@ namespace ECommerce.Domain.Entities.OrderEntity
     public class Order
     {
         public int OrderId { get; set; }
+        public Guid OrderAkId { get; set; }
         public string Username { get; set; }
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }

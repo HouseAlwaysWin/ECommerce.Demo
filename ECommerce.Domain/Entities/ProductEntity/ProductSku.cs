@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using ECommerce.Domain.Entities.ImageEntity;
+using ECommerce.Domain.Entities.OrderEntity;
 
 namespace ECommerce.Domain.Entities.ProductEntity
 {
@@ -15,10 +17,9 @@ namespace ECommerce.Domain.Entities.ProductEntity
         public int Price { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime EditedDate { get; set; }
-
-        public int ProductId { get; set; }
         public Product Product { get; set; }
+        public virtual ICollection<ImageInfo> ImageInfos { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
 
-        public virtual ICollection<ProductSku_ImageInfo> ProductSky_ImageInfo { get; set; }
     }
 }
