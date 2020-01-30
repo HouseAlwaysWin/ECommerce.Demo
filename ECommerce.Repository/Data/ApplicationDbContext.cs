@@ -34,8 +34,7 @@ namespace ECommerce.Repository.Data {
                 .IsRequired ()
                 .HasDefaultValue (ProductStatus.ForSale);
             product.Property (p => p.IsActived)
-                .IsRequired ()
-                .HasDefaultValue (true);
+                .IsRequired ();
             product.Property (p => p.EditedDate)
                 .IsRequired ()
                 .HasDefaultValue (DateTime.UtcNow);
@@ -53,7 +52,7 @@ namespace ECommerce.Repository.Data {
             productSku.HasKey (ps => ps.ProductSkuId).IsClustered ();
             productSku.HasAlternateKey (ps => ps.ProductSkuAkId);
             productSku.Property (ps => ps.StockQuantity).IsRequired ();
-            productSku.Property (ps => ps.IsActived).HasDefaultValue (true);
+            productSku.Property (ps => ps.IsActived);
             productSku.Property (ps => ps.Price).IsRequired ();
             productSku.Property (ps => ps.ReviewRateSum).IsRequired ().HasDefaultValue (0);
             productSku.Property (ps => ps.CreatedDate).IsRequired ().HasDefaultValue (DateTime.UtcNow);
@@ -85,7 +84,7 @@ namespace ECommerce.Repository.Data {
                 .HasPrincipalKey (pc => pc.ProductCategoryAkId)
                 .OnDelete (DeleteBehavior.ClientSetNull);
             productCategory.Property (c => c.Name).IsRequired ().HasMaxLength (100);
-            productCategory.Property (pc => pc.IsActived).HasDefaultValue (true);
+            productCategory.Property (pc => pc.IsActived);
             productCategory.Property (c => c.EditedDate).IsRequired ().HasDefaultValue (DateTime.UtcNow);
             productCategory.Property (c => c.CreatedDate).IsRequired ().HasDefaultValue (DateTime.UtcNow);
             #endregion
@@ -96,11 +95,13 @@ namespace ECommerce.Repository.Data {
             productProductCategory
                 .HasOne (ppc => ppc.Product)
                 .WithMany (p => p.Product_ProductCategory)
-                .HasForeignKey (ppc => ppc.ProductAkId);
+                .HasForeignKey (ppc => ppc.ProductAkId)
+                .HasPrincipalKey (p => p.ProductAkId);
             productProductCategory
                 .HasOne (ppc => ppc.ProductCategory)
                 .WithMany (pc => pc.Product_ProductCategory)
-                .HasForeignKey (ppc => ppc.ProductCategoryAkId);
+                .HasForeignKey (ppc => ppc.ProductCategoryAkId)
+                .HasPrincipalKey (pc => pc.ProductCategoryAkId);
             #endregion
 
             #region ImageInfo
@@ -109,7 +110,7 @@ namespace ECommerce.Repository.Data {
             imageInfo.HasAlternateKey (i => i.ImageInfoAKId);
             imageInfo.Property (i => i.Url).IsRequired ();
             imageInfo.Property (i => i.Type).IsRequired ();
-            imageInfo.Property (i => i.IsActived).HasDefaultValue (true);
+            imageInfo.Property (i => i.IsActived).IsRequired ();
             imageInfo.Property (i => i.CreatedDate).IsRequired ().HasDefaultValue (DateTime.UtcNow);
             imageInfo.Property (i => i.EditedDate).IsRequired ().HasDefaultValue (DateTime.UtcNow);
             imageInfo
@@ -173,9 +174,7 @@ namespace ECommerce.Repository.Data {
                 .HasMaxLength (200);
             faq.Property (f => f.Answer)
                 .IsRequired ();
-            faq.Property (f => f.IsActived)
-                .IsRequired ()
-                .HasDefaultValue (true);
+            faq.Property (f => f.IsActived).IsRequired ();
             faq.Property (f => f.CreatedDate)
                 .IsRequired ()
                 .HasDefaultValue (DateTime.UtcNow);
@@ -192,8 +191,7 @@ namespace ECommerce.Repository.Data {
                 .IsRequired ()
                 .HasMaxLength (100);
             faqCategory.Property (fc => fc.IsActived)
-                .IsRequired ()
-                .HasDefaultValue (true);
+                .IsRequired ();
             faqCategory.Property (fc => fc.CreatedDate)
                 .IsRequired ()
                 .HasDefaultValue (DateTime.UtcNow);
@@ -245,8 +243,7 @@ namespace ECommerce.Repository.Data {
                 .IsRequired ()
                 .HasMaxLength (100);
             noticeCategory.Property (nc => nc.IsActived)
-                .IsRequired ()
-                .HasDefaultValue (true);
+                .IsRequired ();
             noticeCategory.Property (n => n.CreatedDate)
                 .IsRequired ()
                 .HasDefaultValue (DateTime.UtcNow);
