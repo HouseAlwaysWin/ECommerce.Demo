@@ -1,12 +1,3 @@
-ECommerce.Domain/bin/Debug/netcoreapp3.1/ECommerce.Domain.dll
 */bin
 */obj
 */Data/Migrations
-ECommerce.Presentation/bin/*
-node_modules/
-ECommerce.WebApi/ECommerce.Test/bin/
-ECommerce.WebApi/ECommerce.Test/obj/
-ECommerce.Presentation/ScaffoldingReadMe.txt
-ECommerce.Presentation/wwwroot/dist
-
-ECommerce.Presentation/package-lock.json
