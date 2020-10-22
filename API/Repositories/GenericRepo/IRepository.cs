@@ -9,6 +9,12 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace API.Repositories.GenericRepo {
     public interface IRepository<T> : IDisposable where T : class {
+
+        T SingleOrDefault (Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null
+        );
+
         T SingleOrDefault (Expression<Func<T, bool>> predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
@@ -35,6 +41,16 @@ namespace API.Repositories.GenericRepo {
             int size = 20,
             bool enableTracking = true) where TResult : class;
 
+        IPaginate<T> GetList (Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0, int size = 20);
+
+        IPaginate<TResult> GetList<TResult> (Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0, int size = 20) where TResult : class;
+
         Task<T> SingleOrDefaultAsync (Expression<Func<T, bool>> predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
@@ -50,14 +66,6 @@ namespace API.Repositories.GenericRepo {
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
             int index = 0,
-            int size = 20,
-            bool enableTracking = true,
-            CancellationToken cancellationToken = default);
-
-        Task<IPaginate<T>> GetListAsync (Expression<Func<T, bool>> predicate = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
-            int index = 0,
             int size = 20);
 
         Task<IPaginate<TResult>> GetListAsync<TResult> (Expression<Func<T, TResult>> selector,
@@ -67,9 +75,28 @@ namespace API.Repositories.GenericRepo {
             int index = 0,
             int size = 20,
             CancellationToken cancellationToken = default,
+            bool ignoreQueryFilters = false) where TResult : class;
+
+        Task<IPaginate<T>> GetListAsync (
+            Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0,
+            int size = 20,
+            bool enableTracking = true,
+            CancellationToken cancellationToken = default);
+
+        Task<IPaginate<TResult>> GetListAsync<TResult> (
+            Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0,
+            int size = 20,
+            bool enableTracking = true,
+            CancellationToken cancellationToken = default,
             bool ignoreQueryFilters = false)
         where TResult : class;
-
         ValueTask<EntityEntry<T>> InsertAsync (T entity,
             CancellationToken cancellationToken = default);
 

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 
 namespace API.Repositories.GenericRepo {
-    public class Repository<T> : IRepository<T> where T : class {
+    public abstract class Repository<T> : IRepository<T> where T : class {
         protected readonly DbContext _dbContext;
         protected readonly DbSet<T> _dbSet;
 
@@ -20,19 +20,19 @@ namespace API.Repositories.GenericRepo {
         }
 
         public void Delete (T entity) {
-            throw new NotImplementedException ();
+            _dbSet.Remove (entity);
         }
 
         public void Delete (params T[] entities) {
-            throw new NotImplementedException ();
+            _dbSet.RemoveRange (entities);
         }
 
         public void Delete (IEnumerable<T> entities) {
-            throw new NotImplementedException ();
+            _dbSet.RemoveRange (entities);
         }
 
         public void Dispose () {
-            throw new NotImplementedException ();
+            _dbContext?.Dispose ();
         }
 
         public IPaginate<T> GetList (
@@ -70,40 +70,115 @@ namespace API.Repositories.GenericRepo {
                 query.Select (selector).ToPaginate (index, size);
         }
 
-        public Task<IPaginate<T>> GetListAsync (Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, int index = 0, int size = 20, bool enableTracking = true, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException ();
+        public IPaginate<T> GetList (Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0, int size = 20) {
+            return GetList (predicate, orderBy, include, index, size, false);
         }
 
-        public Task<IPaginate<T>> GetListAsync (Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, int index = 0, int size = 20) {
-            throw new NotImplementedException ();
+        public IPaginate<TResult> GetList<TResult> (Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0, int size = 20) where TResult : class {
+            return GetList (selector, predicate, orderBy, include, index, size, false);
         }
 
-        public Task<IPaginate<TResult>> GetListAsync<TResult> (Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, int index = 0, int size = 20, CancellationToken cancellationToken = default, bool ignoreQueryFilters = false) where TResult : class {
-            throw new NotImplementedException ();
+        public Task<IPaginate<T>> GetListAsync (Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0,
+            int size = 20,
+            bool enableTracking = true,
+            CancellationToken cancellationToken = default) {
+            IQueryable<T> query = _dbSet;
+            if (!enableTracking) query = query.AsNoTracking ();
+
+            if (include != null) query = include (query);
+
+            if (predicate != null) query = query.Where (predicate);
+
+            if (orderBy != null)
+                return orderBy (query).ToPaginateAsync (index, size, 0, cancellationToken);
+            return query.ToPaginateAsync (index, size, 0, cancellationToken);
         }
 
-        public T Insert (T entity) {
-            throw new NotImplementedException ();
+        public Task<IPaginate<TResult>> GetListAsync<TResult> (Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0,
+            int size = 20,
+            bool enableTracking = true,
+            CancellationToken cancellationToken = default,
+            bool ignoreQueryFilters = false)
+        where TResult : class {
+            IQueryable<T> query = _dbSet;
+
+            if (!enableTracking) query = query.AsNoTracking ();
+
+            if (include != null) query = include (query);
+
+            if (predicate != null) query = query.Where (predicate);
+
+            if (ignoreQueryFilters) query = query.IgnoreQueryFilters ();
+
+            if (orderBy != null)
+                return orderBy (query).Select (selector).ToPaginateAsync (index, size, 0, cancellationToken);
+
+            return query.Select (selector).ToPaginateAsync (index, size, 0, cancellationToken);
+        }
+        public async Task<IPaginate<T>> GetListAsync (Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0,
+            int size = 20) {
+            return await GetListAsync (predicate, orderBy, include, index, size, false);
+        }
+
+        public async Task<IPaginate<TResult>> GetListAsync<TResult> (Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            int index = 0,
+            int size = 20,
+            CancellationToken cancellationToken = default,
+            bool ignoreQueryFilters = false) where TResult : class {
+            return await GetListAsync (selector, predicate, orderBy, include, index, size, false, cancellationToken,
+                ignoreQueryFilters);
+        }
+
+        public virtual T Insert (T entity) {
+            return _dbSet.Add (entity).Entity;
         }
 
         public void Insert (params T[] entities) {
-            throw new NotImplementedException ();
+            _dbSet.AddRange (entities);
         }
 
         public void Insert (IEnumerable<T> entities) {
-            throw new NotImplementedException ();
+            _dbSet.AddRange (entities);
         }
 
-        public ValueTask<EntityEntry<T>> InsertAsync (T entity, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException ();
+        public virtual ValueTask<EntityEntry<T>> InsertAsync (
+            T entity, CancellationToken cancellationToken = default) {
+            return _dbSet.AddAsync (entity, cancellationToken);
         }
 
-        public Task InsertAsync (params T[] entities) {
-            throw new NotImplementedException ();
+        public virtual Task InsertAsync (params T[] entities) {
+            return _dbSet.AddRangeAsync (entities);
         }
 
-        public Task InsertAsync (IEnumerable<T> entities, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException ();
+        public virtual Task InsertAsync (
+            IEnumerable<T> entities, CancellationToken cancellationToken = default) {
+            return _dbSet.AddRangeAsync (entities);
+        }
+
+        public T SingleOrDefault (Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null
+        ) {
+            return SingleOrDefault (predicate, orderBy, include, false);
         }
 
         public T SingleOrDefault (
@@ -111,7 +186,18 @@ namespace API.Repositories.GenericRepo {
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
             bool enableTracking = true, bool ignoreQueryFilters = false) {
-            throw new NotImplementedException ();
+
+            IQueryable<T> query = _dbSet;
+
+            if (!enableTracking) query = query.AsNoTracking ();
+
+            if (include != null) query = include (query);
+
+            if (predicate != null) query = query.Where (predicate);
+
+            if (ignoreQueryFilters) query = query.IgnoreQueryFilters ();
+
+            return orderBy != null ? orderBy (query).FirstOrDefault () : query.FirstOrDefault ();
         }
 
         public T SingleOrDefault (
@@ -132,7 +218,7 @@ namespace API.Repositories.GenericRepo {
             return query.FirstOrDefault ();
         }
 
-        public async Task<T> SingleOrDefaultAsync (
+        public virtual async Task<T> SingleOrDefaultAsync (
             Expression<Func<T, bool>> predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
@@ -153,7 +239,7 @@ namespace API.Repositories.GenericRepo {
             return await query.FirstOrDefaultAsync ();
         }
 
-        public async Task<T> SingleOrDefaultAsync (
+        public virtual async Task<T> SingleOrDefaultAsync (
             Expression<Func<T, bool>> predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null) {
@@ -162,15 +248,15 @@ namespace API.Repositories.GenericRepo {
         }
 
         public void Update (T entity) {
-            throw new NotImplementedException ();
+            _dbSet.Update (entity);
         }
 
         public void Update (params T[] entities) {
-            throw new NotImplementedException ();
+            _dbSet.UpdateRange (entities);
         }
 
         public void Update (IEnumerable<T> entities) {
-            throw new NotImplementedException ();
+            _dbSet.UpdateRange (entities);
         }
     }
 }
