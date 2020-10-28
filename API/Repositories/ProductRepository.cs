@@ -4,13 +4,14 @@ using System.Data;
 using API.Domain.Entities;
 using API.Repositories;
 using Dapper;
+using Dapper.Contrib.Extensions;
 
 namespace API.SqlServerRepo.Repositories {
 
-    public class ProductRepository<DbConn> : IProductRepository where DbConn : IDbConnection, new () {
+    public class ProductRepository<DbConn> : GenericRepository<Product>, IProductRepository where DbConn : IDbConnection, new () {
 
         private IUnitOfWork _uow;
-        public ProductRepository (IUnitOfWork uow) {
+        public ProductRepository (IUnitOfWork uow) : base (uow) {
             _uow = uow;
         }
 
