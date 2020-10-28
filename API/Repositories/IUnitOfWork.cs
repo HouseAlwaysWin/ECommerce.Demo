@@ -1,8 +1,10 @@
 using System;
 using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories {
     public interface IUnitOfWork : IDisposable {
+
         IDbConnection Connection { get; }
         IDbTransaction Transaction { get; }
         void BeginTrans ();

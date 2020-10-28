@@ -12,18 +12,17 @@ namespace API.Services {
     public class ProductService : IProductService {
 
         private readonly IConfiguration _config;
-        private IProductRepository _sqlServerRepo;
-        private IProductRepository _npgSqlRepo;
+        private IProductRepository _repo;
         private IUnitOfWork _uow;
         public ProductService (IConfiguration config) {
             _config = config;
             _uow = new UnitOfWork<SqlConnection> (_config["ConnectionString:Default"]);
-            _sqlServerRepo = new ProductRepository<SqlConnection> (_uow);
+            _repo = new ProductRepository<SqlConnection> (_uow);
         }
 
         public List<Product> GetProducts (int num = 1000) {
             _uow.BeginTrans ();
-            var products = _sqlServerRepo.GetProducts (num).ToList ();
+            var products = _repo.GetProducts (num).ToList ();
             _uow.Commit ();
             return products;
         }
