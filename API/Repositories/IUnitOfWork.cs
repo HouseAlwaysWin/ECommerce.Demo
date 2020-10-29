@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Repositories {
+namespace ECommerce.Demo.API.Repositories {
     public interface IUnitOfWork : IDisposable {
 
         IDbConnection Connection { get; }

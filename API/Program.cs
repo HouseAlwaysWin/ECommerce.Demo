@@ -10,21 +10,17 @@ using NLog;
 using NLog.Extensions.Logging;
 using NLog.Web;
 
-namespace API {
+namespace ECommerce.Demo.API {
     public class Program {
         public static void Main (string[] args) {
-            var config = new ConfigurationBuilder ()
-                .SetBasePath (System.IO.Directory.GetCurrentDirectory ())
-                .AddJsonFile ("appsettings.json", optional : true, reloadOnChange : true)
-                .Build ();
 
-            NLog.LogManager.Configuration = new NLogLoggingConfiguration (config.GetSection ("NLog"));
-
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog (LogManager.Configuration).GetCurrentClassLogger ();
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog ("nlog.config").GetCurrentClassLogger ();
             try {
+                logger.Debug ("init main");
                 CreateHostBuilder (args).Build ().Run ();
             } catch (Exception ex) {
-                logger.Error (ex);
+                logger.Error (ex, "Stopped program because of exception");
+                throw;
             } finally {
                 NLog.LogManager.Shutdown ();
             }

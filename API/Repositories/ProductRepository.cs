@@ -1,12 +1,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
-using API.Domain.Entities;
-using API.Repositories;
+using ECommerce.Demo.API.Domain.Entities;
+using ECommerce.Demo.API.Repositories;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace API.SqlServerRepo.Repositories {
+namespace ECommerce.Demo.API.SqlServerRepo.Repositories {
 
     public class ProductRepository<DbConn> : GenericRepository<Product>, IProductRepository where DbConn : IDbConnection, new () {
 

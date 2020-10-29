@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
-namespace API.Repositories {
+namespace ECommerce.Demo.API.Repositories {
     public class UnitOfWork<T> : IUnitOfWork where T : IDbConnection, new () {
 
         private bool _disposed;

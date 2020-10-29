@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using API.Extensions;
+using ECommerce.Demo.API.Extensions;
 using Dapper.Contrib.Extensions;
 
-namespace API.Repositories {
+namespace ECommerce.Demo.API.Repositories {
     public class GenericRepository<T> where T : class {
         private IUnitOfWork _uow;
         public GenericRepository (IUnitOfWork uow) {

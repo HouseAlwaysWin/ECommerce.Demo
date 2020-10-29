@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
-using API.Domain.DTO;
-using API.Domain.Entities;
 using AutoMapper;
+using ECommerce.Demo.API.Domain.DTO;
+using ECommerce.Demo.API.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-namespace API.Controllers {
+namespace ECommerce.Demo.API.Controllers {
     public class AuthController : ControllerBase {
 
         private readonly SignInManager<User> _signInManager;
@@ -35,7 +35,6 @@ namespace API.Controllers {
             if (result.Succeeded) {
                 return CreatedAtRoute ("GetUser", new { controller = "Users", id = createUser.Id });
             }
-
             return BadRequest (result.Errors);
         }
 

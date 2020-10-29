@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using API.Domain.Entities;
-using API.Repositories;
-using API.Services;
-using API.SqlServerRepo.Repositories;
+using ECommerce.Demo.API.Domain.Entities;
+using ECommerce.Demo.API.Repositories;
+using ECommerce.Demo.API.Services;
+using ECommerce.Demo.API.SqlServerRepo.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -17,7 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace API {
+namespace ECommerce.Demo.API {
     public class Startup {
         public Startup (IConfiguration configuration) {
             Configuration = configuration;
@@ -27,13 +27,7 @@ namespace API {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
-            var config = new ConfigurationBuilder ()
-                .SetBasePath (System.IO.Directory.GetCurrentDirectory ())
-                .AddJsonFile ("appsettings.json", optional : true, reloadOnChange : true)
-                .Build ();
-
-            NLog.LogManager.Configuration = new NLogLoggingConfiguration (config.GetSection ("NLog"));
-
+            
             services.AddControllers ();
             services.AddSingleton<IUnitOfWork> (u => new UnitOfWork<SqlConnection> (Configuration["ConnectionString:Default"]));
             services.AddSingleton<IProductRepository, ProductRepository<SqlConnection>> ();

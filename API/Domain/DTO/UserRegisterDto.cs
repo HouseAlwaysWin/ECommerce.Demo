@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace API.Domain.DTO {
+namespace ECommerce.Demo.API.Domain.DTO {
     public class UserRegisterDto {
         [Required]
         public string Username { get; set; }

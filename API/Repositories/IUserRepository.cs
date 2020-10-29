@@ -1,4 +1,4 @@
-namespace API.Repositories
+namespace ECommerce.Demo.API.Repositories
 {
     public interface IUserRepository
     {

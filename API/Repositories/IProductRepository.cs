@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using API.Domain.Entities;
+using ECommerce.Demo.API.Domain.Entities;
 
-namespace API.SqlServerRepo.Repositories {
+namespace ECommerce.Demo.API.SqlServerRepo.Repositories {
     public interface IProductRepository {
         IEnumerable<Product> GetProducts (int num = 1000);
 

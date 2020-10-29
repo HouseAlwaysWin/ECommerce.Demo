@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using System.Threading;
 using static Dapper.Contrib.Extensions.SqlMapperExtensions;
 
-namespace API.Extensions {
+namespace ECommerce.Demo.API.Extensions {
     internal static class ProxyGenerator {
         private static readonly Dictionary<Type, Type> TypeCache = new Dictionary<Type, Type> ();
 

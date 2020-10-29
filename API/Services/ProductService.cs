@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using API.Domain.Entities;
-using API.Repositories;
-using API.SqlServerRepo.Repositories;
+using ECommerce.Demo.API.Domain.Entities;
+using ECommerce.Demo.API.Repositories;
+using ECommerce.Demo.API.SqlServerRepo.Repositories;
 using NLog;
 
-namespace API.Services {
+namespace ECommerce.Demo.API.Services {
     public class ProductService : IProductService {
         private IProductRepository _repo;
         private IUnitOfWork _uow;

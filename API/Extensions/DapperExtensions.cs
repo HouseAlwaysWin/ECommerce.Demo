@@ -11,7 +11,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using static Dapper.Contrib.Extensions.SqlMapperExtensions;
 
-namespace API.Extensions {
+namespace ECommerce.Demo.API.Extensions {
 
     public static class DapperExtensions {
 
