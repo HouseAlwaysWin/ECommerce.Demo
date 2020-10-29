@@ -1,35 +1,34 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using API.Domain.Entities;
-using API.Domain.Model;
 using API.Repositories;
 using API.SqlServerRepo.Repositories;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using Npgsql;
+using NLog;
 
 namespace API.Services {
     public class ProductService : IProductService {
-
-        // private readonly IConfiguration _config;
         private IProductRepository _repo;
         private IUnitOfWork _uow;
+        private static Logger _logger = NLog.LogManager.GetCurrentClassLogger ();
         public ProductService (
-            // IConfiguration config,
             IUnitOfWork uow,
             IProductRepository repo) {
-            // _config = config;
             _uow = uow;
             _repo = repo;
-            // _uow = new UnitOfWork<SqlConnection> (_config["ConnectionString:Default"]);
-            // _repo = new ProductRepository<SqlConnection> (_uow);
         }
 
         public List<Product> GetProducts (int num = 1000) {
-            _uow.BeginTrans ();
-            var products = _repo.GetProducts (num).ToList ();
-            _uow.Commit ();
-            return products;
+            try {
+                _uow.BeginTrans ();
+                var products = _repo.GetProducts (num).ToList ();
+                _uow.Commit ();
+                return products;
+
+            } catch (Exception ex) {
+                _logger.Error (ex, "Get Products  Error");
+            }
+            return null;
         }
 
     }

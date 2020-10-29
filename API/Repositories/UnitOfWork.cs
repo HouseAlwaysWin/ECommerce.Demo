@@ -9,7 +9,7 @@ namespace API.Repositories {
     public class UnitOfWork<T> : IUnitOfWork where T : IDbConnection, new () {
 
         private bool _disposed;
-        public T _connection;
+        private T _connection;
         private IDbTransaction _transaction;
 
         public IDbConnection Connection { get { return _connection; } }

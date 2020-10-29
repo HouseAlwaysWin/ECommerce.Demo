@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace API {
     public class Startup {
@@ -26,6 +27,13 @@ namespace API {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
+            var config = new ConfigurationBuilder ()
+                .SetBasePath (System.IO.Directory.GetCurrentDirectory ())
+                .AddJsonFile ("appsettings.json", optional : true, reloadOnChange : true)
+                .Build ();
+
+            NLog.LogManager.Configuration = new NLogLoggingConfiguration (config.GetSection ("NLog"));
+
             services.AddControllers ();
             services.AddSingleton<IUnitOfWork> (u => new UnitOfWork<SqlConnection> (Configuration["ConnectionString:Default"]));
             services.AddSingleton<IProductRepository, ProductRepository<SqlConnection>> ();
