@@ -11,13 +11,18 @@ using Npgsql;
 namespace API.Services {
     public class ProductService : IProductService {
 
-        private readonly IConfiguration _config;
+        // private readonly IConfiguration _config;
         private IProductRepository _repo;
         private IUnitOfWork _uow;
-        public ProductService (IConfiguration config) {
-            _config = config;
-            _uow = new UnitOfWork<SqlConnection> (_config["ConnectionString:Default"]);
-            _repo = new ProductRepository<SqlConnection> (_uow);
+        public ProductService (
+            // IConfiguration config,
+            IUnitOfWork uow,
+            IProductRepository repo) {
+            // _config = config;
+            _uow = uow;
+            _repo = repo;
+            // _uow = new UnitOfWork<SqlConnection> (_config["ConnectionString:Default"]);
+            // _repo = new ProductRepository<SqlConnection> (_uow);
         }
 
         public List<Product> GetProducts (int num = 1000) {

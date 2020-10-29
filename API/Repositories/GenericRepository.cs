@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using API.Extensions;
 using Dapper.Contrib.Extensions;
 
@@ -21,20 +22,36 @@ namespace API.Repositories {
             return _uow.Connection.Get<T> (id, _uow.Transaction);
         }
 
+        public async Task<T> GetTaskAsync (object id) {
+            return await _uow.Connection.GetAsync<T> (id, _uow.Transaction);
+        }
+
         public void Insert (T model) {
             _uow.Connection.Insert<T> (model, _uow.Transaction);
+        }
+
+        public async Task InsertAsync (T model) {
+            await _uow.Connection.InsertAsync<T> (model, _uow.Transaction);
         }
 
         public void Update (T model) {
             _uow.Connection.Update<T> (model, _uow.Transaction);
         }
 
+        public async Task UpdateAsync (T model) {
+            await _uow.Connection.UpdateAsync<T> (model, _uow.Transaction);
+        }
+
         public void Delete (T model) {
             _uow.Connection.Delete<T> (model, _uow.Transaction);
         }
 
-        public void DeleteAll () {
-            _uow.Connection.DeleteAll<T> (_uow.Transaction);
+        public async Task DeleteAsync (T model) {
+            await _uow.Connection.DeleteAsync<T> (model, _uow.Transaction);
+        }
+
+        public async Task DeleteAll () {
+            await _uow.Connection.DeleteAllAsync<T> (_uow.Transaction);
         }
 
     }
