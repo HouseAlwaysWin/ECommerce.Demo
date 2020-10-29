@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using API.Extensions;
 using Dapper.Contrib.Extensions;
 
 namespace API.Repositories {
@@ -6,6 +7,10 @@ namespace API.Repositories {
         private IUnitOfWork _uow;
         public GenericRepository (IUnitOfWork uow) {
             _uow = uow;
+        }
+
+        public IEnumerable<T> GetPaginated (ref int total, int currentPage, int itemsPerPage) {
+            return _uow.Connection.GetPaginated<T> (ref total, currentPage, itemsPerPage, _uow.Transaction);
         }
 
         public IEnumerable<T> GetAll () {
