@@ -28,29 +28,42 @@ namespace API.Extensions {
         private static readonly ConcurrentDictionary<RuntimeTypeHandle, IEnumerable<PropertyInfo>> WhereProperties = new ConcurrentDictionary<RuntimeTypeHandle, IEnumerable<PropertyInfo>> ();
         private static readonly ConcurrentDictionary<RuntimeTypeHandle, IEnumerable<PropertyInfo>> OrderByProperties = new ConcurrentDictionary<RuntimeTypeHandle, IEnumerable<PropertyInfo>> ();
 
-        private static readonly ConcurrentDictionary<RuntimeTypeHandle, string> GetQueries = new ConcurrentDictionary<RuntimeTypeHandle, string> ();
+        private static readonly ConcurrentDictionary<string, string> GetQueries = new ConcurrentDictionary<string, string> ();
         private static readonly ConcurrentDictionary<RuntimeTypeHandle, string> TypeTableName = new ConcurrentDictionary<RuntimeTypeHandle, string> ();
         private static readonly ISqlCommand DefaultCmd = new SqlServerCmd ();
 
         private interface ISqlCommand {
-            string GetPaginated ();
+            string GetPaginated (string tableName, string orderBy, int currentPage, int itemsPerPage, bool isDesc);
         }
 
         private class SqlServerCmd : ISqlCommand {
-            public string GetPaginated () {
-                throw new NotImplementedException ();
+            public string GetPaginated (string tableName, string orderBy, int currentPage, int itemsPerPage, bool isDesc) {
+                string desc = isDesc ? "DESC" : "ASC";
+                int totalItems = (currentPage - 1) * itemsPerPage;
+                return $"SELECT * FROM {tableName} ORDER BY {orderBy} {desc} OFFSET {totalItems} ROWS FETCH NEXT {itemsPerPage} ROWS ONLY ";
             }
         }
         private class PostgresCmd : ISqlCommand {
-            public string GetPaginated () {
+            public string GetPaginated (string tableName, string orderBy, int currentPage, int itemsPerPage, bool isDesc) {
                 throw new NotImplementedException ();
             }
         }
 
         private class MySqlCmd : ISqlCommand {
-            public string GetPaginated () {
+            public string GetPaginated (string tableName, string orderBy, int currentPage, int itemsPerPage, bool isDesc) {
                 throw new NotImplementedException ();
             }
+        }
+
+        [AttributeUsage (AttributeTargets.Property)]
+        private class OrderByAttribute : Attribute {
+            public OrderByAttribute (bool isDesc = false) {
+                IsDesc = isDesc;
+            }
+            /// <summary>
+            /// Whether an order is IsDesc
+            /// </summary>
+            public bool IsDesc { get; }
         }
 
         private static ISqlCommand GetSqlCommand (IDbConnection connection) {
@@ -109,6 +122,26 @@ namespace API.Extensions {
             return keyProperties;
         }
 
+        private static List<PropertyInfo> OrderByPropertiesCache (Type type) {
+            if (OrderByProperties.TryGetValue (type.TypeHandle, out IEnumerable<PropertyInfo> pi)) {
+                return pi.ToList ();
+            }
+
+            var allProperties = TypePropertiesCache (type);
+            var orderByProperties = allProperties.Where (p => p.GetCustomAttributes (true).Any (a => a is OrderByAttribute)).ToList ();
+
+            OrderByProperties[type.TypeHandle] = orderByProperties;
+            return orderByProperties;
+        }
+
+        private static bool IsOrderByDesc (PropertyInfo pi) {
+            var attributes = pi.GetCustomAttributes (typeof (OrderByAttribute), false).AsList ();
+            if (attributes.Count != 1) return true;
+
+            var orderByAttribute = (OrderByAttribute) attributes[0];
+            return orderByAttribute.IsDesc;
+        }
+
         private static PropertyInfo GetSingleKey<T> (string method) {
             var type = typeof (T);
             var keys = KeyPropertiesCache (type);
@@ -162,26 +195,37 @@ namespace API.Extensions {
         /// <param name="transaction">The transaction to run under, null (the default) if none</param>
         /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
         /// <returns>Entity of T</returns>
-        public static IEnumerable<T> GetPaginated<T> (this IDbConnection connection, ref int total, int page, int itemsPerPage, string orderBy, IDbTransaction transaction = null, int? commandTimeout = null) where T : class {
+        public static IEnumerable<T> GetPaginated<T> (this IDbConnection connection, ref int total, int currentPage, int itemsPerPage, IDbTransaction transaction = null, int? commandTimeout = null) where T : class {
             var type = typeof (T);
-            var cacheType = typeof (List<T>);
+            var cacheName = nameof (T) + nameof (GetPaginated);
+            var countCache = nameof (GetPaginated);
 
-            if (!GetQueries.TryGetValue (cacheType.TypeHandle, out string sql)) {
+            if (!GetQueries.TryGetValue (cacheName, out string sql)) {
                 GetSingleKey<T> (nameof (GetPaginated));
                 var name = GetTableName (type);
+                var orderByProp = OrderByPropertiesCache (type).FirstOrDefault ();
+                var isDesc = IsOrderByDesc (orderByProp);
 
-                // sql = "select * from " + name;
-                sql = GetSqlCommand (connection).GetPaginated ();
-                GetQueries[cacheType.TypeHandle] = sql;
+                sql = GetSqlCommand (connection).GetPaginated (name, orderByProp.Name, currentPage, itemsPerPage, isDesc);
+                GetQueries[cacheName] = sql;
             }
 
-            if (!type.IsInterface) return connection.Query<T> (sql, new {
-                Page = page,
-                    ItemsPerPage = itemsPerPage,
-                    OrderBy = orderBy
-            }, transaction, commandTimeout : commandTimeout);
+            if (!GetQueries.TryGetValue (countCache, out string sqlTotal)) {
+                GetSingleKey<T> (nameof (GetPaginated));
+                var name = GetTableName (type);
+                var orderByProp = OrderByPropertiesCache (type).FirstOrDefault ();
+                var isDesc = IsOrderByDesc (orderByProp);
 
-            var result = connection.Query (sql);
+                sqlTotal = "SELECT COUNT(*) FROM " + name;
+                GetQueries[countCache] = sqlTotal;
+            }
+
+            total = connection.QueryFirst<int> (sqlTotal, null, transaction, commandTimeout : commandTimeout);
+            if (!type.IsInterface) {
+                return connection.Query<T> (sql, new { Page = currentPage, ItemsPerPage = itemsPerPage, }, transaction, commandTimeout : commandTimeout);
+            }
+
+            var result = connection.Query<T> (sql, new { Page = currentPage, ItemsPerPage = itemsPerPage, }, transaction, commandTimeout : commandTimeout);
             var list = new List<T> ();
             foreach (IDictionary<string, object> res in result) {
                 var obj = ProxyGenerator.GetInterfaceProxy<T> ();
