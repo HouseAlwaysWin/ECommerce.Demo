@@ -14,15 +14,15 @@ namespace ECommerce.Demo.API {
     public class Program {
         public static void Main (string[] args) {
 
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog ("nlog.config").GetCurrentClassLogger ();
+            // var logger = NLog.Web.NLogBuilder.ConfigureNLog ("nlog.config").GetCurrentClassLogger ();
             try {
-                logger.Debug ("init main");
+                // logger.Debug ("init main");
                 CreateHostBuilder (args).Build ().Run ();
             } catch (Exception ex) {
-                logger.Error (ex, "Stopped program because of exception");
+                // logger.Error (ex, "Stopped program because of exception");
                 throw;
             } finally {
-                NLog.LogManager.Shutdown ();
+                // NLog.LogManager.Shutdown ();
             }
         }
 
@@ -30,11 +30,11 @@ namespace ECommerce.Demo.API {
             Host.CreateDefaultBuilder (args)
             .ConfigureWebHostDefaults (webBuilder => {
                 webBuilder.UseStartup<Startup> ();
-            })
-            .ConfigureLogging (logging => {
-                logging.ClearProviders ();
-                logging.SetMinimumLevel (Microsoft.Extensions.Logging.LogLevel.Trace);
-            })
-            .UseNLog ();
+            });
+            // .ConfigureLogging (logging => {
+            //     logging.ClearProviders ();
+            //     logging.SetMinimumLevel (Microsoft.Extensions.Logging.LogLevel.Trace);
+            // })
+            // .UseNLog ();
     }
 }
