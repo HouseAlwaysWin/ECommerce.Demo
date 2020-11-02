@@ -65,7 +65,7 @@ namespace ECommerce.Demo.API {
             });
             services.AddDbContext<ECDbContext> (x => x.UseSqlServer (Configuration.GetConnectionString ("Default")));
             services.AddCors ();
-            services.AddTransient<IUnitOfWork> (u => new UnitOfWork<SqlConnection> (Configuration["ConnectionString:Default"]));
+            services.AddSingleton<IUnitOfWork> (u => new UnitOfWork<SqlConnection> (Configuration["ConnectionString:Default"]));
             services.AddSingleton<IProductRepository, ProductRepository<SqlConnection>> ();
             services.AddScoped<IProductService, ProductService> ();
         }
