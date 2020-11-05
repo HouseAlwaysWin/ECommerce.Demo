@@ -8,12 +8,16 @@ using API.Domain.DTO;
 using AutoMapper;
 using ECommerce.Demo.API.Domain.DTO;
 using ECommerce.Demo.API.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerce.Demo.API.Controllers {
+    [Route ("api/[controller]")]
+    [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase {
 
         private readonly SignInManager<User> _signInManager;

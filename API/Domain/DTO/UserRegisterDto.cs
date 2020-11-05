@@ -16,7 +16,7 @@ namespace ECommerce.Demo.API.Domain.DTO {
         [Required]
         public string KnownAs { get; set; }
 
-        [Required]
+        // [Required]
         public DateTime DateOfBirth { get; set; }
 
         [Required]

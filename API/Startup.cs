@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using ECommerce.Demo.API.Controllers;
 using ECommerce.Demo.API.Domain.Entities;
 using ECommerce.Demo.API.Repositories;
 using ECommerce.Demo.API.Services;
@@ -36,6 +39,7 @@ namespace ECommerce.Demo.API {
         public void ConfigureServices (IServiceCollection services) {
 
             IdentityBuilder builder = services.AddIdentityCore<User> (opt => {
+                opt.Password.RequireLowercase = false;
                 opt.Password.RequireDigit = false;
                 opt.Password.RequiredLength = 4;
                 opt.Password.RequireNonAlphanumeric = false;
@@ -50,8 +54,8 @@ namespace ECommerce.Demo.API {
                 .AddJwtBearer (options => {
                     options.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey (
-                    Encoding.ASCII.GetBytes (Configuration.GetSection ("AppSetting:Token").Value)),
+                    // IssuerSigningKey = new SymmetricSecurityKey ( Encoding.ASCII.GetBytes (Configuration.GetSection ("AppSetting:Token").Value)),
+                    IssuerSigningKey = new SymmetricSecurityKey (Encoding.ASCII.GetBytes ("Test")),
                     ValidateIssuer = false,
                     ValidateAudience = false
                     };
@@ -63,6 +67,7 @@ namespace ECommerce.Demo.API {
             }).AddNewtonsoftJson (opt => {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+            services.AddAutoMapper (typeof (ProductRepository<SqlConnection>).Assembly);
             services.AddDbContext<ECDbContext> (x => x.UseSqlServer (Configuration.GetConnectionString ("Default")));
             services.AddCors ();
             services.AddSingleton<IUnitOfWork> (u => new UnitOfWork<SqlConnection> (Configuration["ConnectionString:Default"]));

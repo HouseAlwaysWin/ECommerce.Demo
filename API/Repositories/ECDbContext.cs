@@ -30,21 +30,26 @@ namespace ECommerce.Demo.API.Repositories {
                     .IsRequired ();
             });
 
-            builder.Entity<IdentityUserClaim<string>> (e => {
+            builder.Entity<IdentityUserClaim<int>> (e => {
                 e.ToTable ("UserClaim");
             });
 
-            builder.Entity<IdentityUserLogin<string>> (e => {
+            builder.Entity<IdentityUserLogin<int>> (e => {
                 e.ToTable ("UserLogin");
                 e.HasKey (ul => ul.UserId);
             });
 
-            builder.Entity<IdentityRoleClaim<string>> (e => {
+            builder.Entity<IdentityUserClaim<int>> (e => {
+                e.ToTable ("UserClaim");
+                e.HasKey (uc => uc.Id);
+            });
+
+            builder.Entity<IdentityRoleClaim<int>> (e => {
                 e.ToTable ("RoleClaims");
                 e.HasKey (rc => rc.RoleId);
             });
 
-            builder.Entity<IdentityUserToken<string>> (e => {
+            builder.Entity<IdentityUserToken<int>> (e => {
                 e.ToTable ("UserTokens");
                 e.HasKey (ut => ut.UserId);
             });
