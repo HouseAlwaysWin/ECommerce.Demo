@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using API.Services;
 using AutoMapper;
 using ECommerce.Demo.API.Controllers;
 using ECommerce.Demo.API.Domain.Entities;
@@ -25,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using NetCore.AutoRegisterDi;
 using NLog.Extensions.Logging;
 
 namespace ECommerce.Demo.API {
@@ -67,12 +69,15 @@ namespace ECommerce.Demo.API {
             }).AddNewtonsoftJson (opt => {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            services.AddAutoMapper (typeof (ProductRepository<SqlConnection>).Assembly);
+            services.AddAutoMapper (typeof (UserService).Assembly);
             services.AddDbContext<ECDbContext> (x => x.UseSqlServer (Configuration.GetConnectionString ("Default")));
             services.AddCors ();
-            services.AddSingleton<IUnitOfWork> (u => new UnitOfWork<SqlConnection> (Configuration["ConnectionString:Default"]));
+
+            services.AddSingleton<IUnitOfWork> (u => new UnitOfWork<SqlConnection> (Configuration.GetConnectionString ("Default")));
             services.AddSingleton<IProductRepository, ProductRepository<SqlConnection>> ();
+            services.AddSingleton<IUserRepository, UserRepository<SqlConnection>> ();
             services.AddScoped<IProductService, ProductService> ();
+            services.AddScoped<IUserService, UserService> ();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -7,6 +7,7 @@ namespace API.Extensions {
     public class AutoMapperProfiles : Profile {
         public AutoMapperProfiles () {
             CreateMap<UserRegisterDto, User> ();
+            CreateMap<User, UserDetailDto> ();
             CreateMap<UserLoginDto, UserDetailDto> ();
         }
     }
