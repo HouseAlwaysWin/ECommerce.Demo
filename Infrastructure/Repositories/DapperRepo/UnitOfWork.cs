@@ -1,26 +1,28 @@
+using System.Transactions;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
+using ECommerce.Demo.Core.Interfaces;
 
-namespace ECommerce.Demo.API.Repositories {
+namespace ECommerce.Demo.API.Repositories.DapperRepo {
+
     public class UnitOfWork<T> : IUnitOfWork where T : IDbConnection, new () {
 
         private bool _disposed;
         private T _connection;
         private IDbTransaction _transaction;
-
         public IDbConnection Connection { get { return _connection; } }
         public IDbTransaction Transaction { get { return _transaction; } }
 
         public UnitOfWork (string connectionString) {
-            var instance = typeof(T);
-            
-            _connection = new T ();
-            _connection.ConnectionString = connectionString;
-            _connection.Open ();
+                _connection = new T ();
+                _connection.ConnectionString = connectionString;
+                _connection.Open ();
         }
 
         public void Commit () {
@@ -32,6 +34,8 @@ namespace ECommerce.Demo.API.Repositories {
                 _transaction.Dispose ();
             }
         }
+
+
 
         public void Dispose () {
             dispose (true);
