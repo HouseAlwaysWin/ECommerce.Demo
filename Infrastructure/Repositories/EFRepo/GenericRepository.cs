@@ -1,34 +1,51 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Demo.Core.Entities;
 using ECommerce.Demo.Core.Interfaces;
+using Infrastructure.Data;
+using Infrastructure.Repositories.EFRepo.Specs;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories.EFRepo
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
-    {
-        public Task<int> CountAsync(ISpecification<T> spec)
+    {  private readonly StoreContext _context;
+
+        public GenericRepository(StoreContext context)
         {
-            throw new System.NotImplementedException();
+            this._context = context;
+            
         }
 
-        public Task<T> GetByIdAsync(int id)
+        public async Task<int> CountAsync(ISpecification<T> spec)
         {
-            throw new System.NotImplementedException();
+            return await ApplySpecification(spec).CountAsync();
         }
 
-        public Task<T> GetEntityWithSpec(ISpecification<T> spec)
+        public async Task<T> GetByIdAsync(int id)
         {
-            throw new System.NotImplementedException();
+            return await _context.Set<T>().FindAsync(id);
         }
 
-        public Task<System.Collections.Generic.IReadOnlyList<T>> ListAllAsync()
+        public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
         {
-            throw new System.NotImplementedException();
+            return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
 
-        public Task<System.Collections.Generic.IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
+        public async Task<IReadOnlyList<T>> ListAllAsync()
         {
-            throw new System.NotImplementedException();
+            return await _context.Set<T>().ToListAsync();
         }
+
+        public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).ToListAsync();
+        }
+
+        private IQueryable<T> ApplySpecification(ISpecification<T> spec){
+            return SpecEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(),spec);
+        }
+
     }
 }

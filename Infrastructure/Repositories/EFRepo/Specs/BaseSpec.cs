@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using ECommerce.Demo.Core.Interfaces;
 
-namespace Core.Specs
+namespace Infrastructure.Repositories.EFRepo.Specs
 {
-    public class BaseSpec<T> : ISpecification<T>
+        public class BaseSpec<T> : ISpecification<T>
     {
         public BaseSpec()
         {

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using Dapper;
 using ECommerce.Demo.API.Repositories.DapperRepo;
 using ECommerce.Demo.Core.Entities;
@@ -19,6 +20,27 @@ namespace ECommerce.Demo.API.SqlServerRepo.Repositories.DapperRepo {
             string sqlCmd = GetSqlCommand ().GetProducts ();
             return _uow.Connection.Query<Product> (sqlCmd, new { Num = num }, _uow.Transaction);
         }
+
+        public Task<Product> GetProductByIdAsync(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<Product>> GetProductsAsync()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<ProductBrand>> GetProductBrandsAsync()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<ProductType>> GetProductTypesAsync()
+        {
+            throw new System.NotImplementedException();
+        }
+
 
         #region SqlCmd String
         private interface ISqlCommand {
@@ -53,6 +75,7 @@ namespace ECommerce.Demo.API.SqlServerRepo.Repositories.DapperRepo {
             var name = typeof (DbConn).FullName.ToLower ();
             return CmdDict.TryGetValue (name, out var cmd) ? cmd : DefaultAdapter;
         }
+
         #endregion
 
     }
