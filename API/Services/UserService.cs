@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 using API.Domain.DTO;
 using AutoMapper;
-using ECommerce.Demo.API.Domain.Entities;
 using ECommerce.Demo.API.Repositories;
+using ECommerce.Demo.Core.Entities;
+using ECommerce.Demo.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,13 +11,13 @@ namespace API.Services {
     public class UserService : IUserService {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
-        private readonly ECDbContext _context;
+        private readonly StoreContext _context;
         private readonly IMapper _mapper;
 
         public UserService (
             IUnitOfWork uow,
             IUserRepository userRepository,
-            ECDbContext context,
+            StoreContext context,
             IMapper mapper) {
             this._mapper = mapper;
             this._context = context;

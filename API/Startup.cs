@@ -1,10 +1,10 @@
 using System.Text;
 using API.Services;
 using AutoMapper;
-using ECommerce.Demo.API.Domain.Entities;
 using ECommerce.Demo.API.Repositories;
 using ECommerce.Demo.API.Services;
 using ECommerce.Demo.API.SqlServerRepo.Repositories;
+using ECommerce.Demo.Core.Entities;
 using ECommerce.Demo.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using API.Domain.DTO;
 using AutoMapper;
 using ECommerce.Demo.API.Domain.DTO;
-using ECommerce.Demo.API.Domain.Entities;
+using ECommerce.Demo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

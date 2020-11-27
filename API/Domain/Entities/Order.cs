@@ -1,7 +1,7 @@
-namespace API.Domain.Entities
-{
-    public class Order
-    {
+// namespace API.Domain.Entities
+// {
+//     public class Order
+//     {
         
-    }
-}
+//     }
+// }

@@ -1,7 +1,7 @@
 using API.Domain.DTO;
 using AutoMapper;
 using ECommerce.Demo.API.Domain.DTO;
-using ECommerce.Demo.API.Domain.Entities;
+using ECommerce.Demo.Core.Entities;
 
 namespace API.Extensions {
     public class AutoMapperProfiles : Profile {

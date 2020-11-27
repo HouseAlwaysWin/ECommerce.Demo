@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
-using ECommerce.Demo.API.Domain.Entities;
 using ECommerce.Demo.API.Repositories;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using ECommerce.Demo.Core.Entities;
 
 namespace ECommerce.Demo.API.SqlServerRepo.Repositories {
 

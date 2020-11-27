@@ -1,4 +1,5 @@
-using ECommerce.Demo.API.Domain.Entities;
+
+using ECommerce.Demo.Core.Entities;
 
 namespace ECommerce.Demo.API.Repositories {
     public class UserRepository<DbConn> : GenericRepository<User>, IUserRepository {

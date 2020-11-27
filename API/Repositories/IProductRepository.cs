@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using ECommerce.Demo.API.Domain.Entities;
+using ECommerce.Demo.Core.Entities;
 
 namespace ECommerce.Demo.API.SqlServerRepo.Repositories {
     public interface IProductRepository {
