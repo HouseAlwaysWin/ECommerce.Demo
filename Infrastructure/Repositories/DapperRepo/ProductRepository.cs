@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using ECommerce.Demo.API.Repositories.DapperRepo;
 using ECommerce.Demo.Core.Entities;
 using ECommerce.Demo.Core.Interfaces;
+using ECommerce.Demo.Infrastructure.Repositories.DapperRepo;
 
-namespace ECommerce.Demo.API.SqlServerRepo.Repositories.DapperRepo {
+namespace ECommerce.Demo.Infrastructure.SqlServerRepo.Repositories.DapperRepo {
 
     public class ProductRepository<DbConn> : GenericRepository<Product>, IProductRepository where DbConn : IDbConnection, new () {
 

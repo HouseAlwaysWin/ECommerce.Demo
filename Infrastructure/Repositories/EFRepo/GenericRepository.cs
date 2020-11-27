@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Demo.Core.Entities;
 using ECommerce.Demo.Core.Interfaces;
-using Infrastructure.Data;
-using Infrastructure.Repositories.EFRepo.Specs;
+using ECommerce.Demo.Infrastructure.Data;
+using ECommerce.Demo.Infrastructure.Repositories.EFRepo.Specs;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories.EFRepo
+namespace ECommerce.Demo.Infrastructure.Repositories.EFRepo
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {  private readonly StoreContext _context;

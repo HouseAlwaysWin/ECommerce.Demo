@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ECommerce.Demo.API.Extensions;
 using Dapper.Contrib.Extensions;
+using ECommerce.Demo.Infrastructure.Extensions;
 
 namespace ECommerce.Demo.API.Repositories {
     public class GenericRepository<T> where T : class {

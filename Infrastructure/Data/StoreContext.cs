@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data
+namespace ECommerce.Demo.Infrastructure.Data
 {
     public class StoreContext:IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>> 
     {
        public StoreContext (DbContextOptions options) : base (options) { }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductPrice> ProductPrices {get;set;}
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
 

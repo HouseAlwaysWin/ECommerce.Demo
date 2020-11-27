@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using ECommerce.Demo.Core.Interfaces;
 
-namespace Infrastructure.Repositories.EFRepo.Specs
+namespace ECommerce.Demo.Infrastructure.Repositories.EFRepo.Specs
 {
         public class BaseSpec<T> : ISpecification<T>
     {

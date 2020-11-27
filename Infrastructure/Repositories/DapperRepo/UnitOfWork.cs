@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
 using ECommerce.Demo.Core.Interfaces;
 
-namespace ECommerce.Demo.API.Repositories.DapperRepo {
+namespace ECommerce.Demo.Infrastructure.Repositories.DapperRepo {
 
     public class UnitOfWork<T> : IUnitOfWork where T : IDbConnection, new () {
 

@@ -4,7 +4,7 @@ using Dapper.Contrib.Extensions;
 using ECommerce.Demo.Core.Interfaces;
 using ECommerce.Demo.Infrastructure.Extensions;
 
-namespace ECommerce.Demo.API.Repositories.DapperRepo {
+namespace ECommerce.Demo.Infrastructure.Repositories.DapperRepo {
     public class GenericRepository<T> where T : class {
         private IUnitOfWork _uow;
         public GenericRepository (IUnitOfWork uow) {

@@ -1,35 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using API.Services;
 using AutoMapper;
-using ECommerce.Demo.API.Controllers;
 using ECommerce.Demo.API.Domain.Entities;
 using ECommerce.Demo.API.Repositories;
 using ECommerce.Demo.API.Services;
 using ECommerce.Demo.API.SqlServerRepo.Repositories;
+using ECommerce.Demo.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using NetCore.AutoRegisterDi;
-using NLog.Extensions.Logging;
 
-namespace ECommerce.Demo.API {
+namespace ECommerce.Demo.API
+{
     public class Startup {
         public Startup (IConfiguration configuration) {
             Configuration = configuration;
@@ -48,7 +39,7 @@ namespace ECommerce.Demo.API {
                 opt.Password.RequireUppercase = false;
             });
             builder = new IdentityBuilder (builder.UserType, typeof (Role), builder.Services);
-            builder.AddEntityFrameworkStores<ECDbContext> ();
+            builder.AddEntityFrameworkStores<StoreContext> ();
             builder.AddRoleValidator<RoleValidator<Role>> ();
             builder.AddRoleManager<RoleManager<Role>> ();
             builder.AddSignInManager<SignInManager<User>> ();
@@ -70,8 +61,12 @@ namespace ECommerce.Demo.API {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
             services.AddAutoMapper (typeof (UserService).Assembly);
-            services.AddDbContext<ECDbContext> (x => x.UseSqlServer (Configuration.GetConnectionString ("Default")));
-            services.AddCors ();
+            services.AddDbContext<StoreContext> (x => x.UseSqlServer (Configuration.GetConnectionString ("Default")));
+            services.AddCors (opt =>{
+                opt.AddPolicy("CorsPolicy",policy =>{
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
 
             services.AddSingleton<IUnitOfWork> (u => new UnitOfWork<SqlConnection> (Configuration.GetConnectionString ("Default")));
             services.AddSingleton<IProductRepository, ProductRepository<SqlConnection>> ();
@@ -88,9 +83,12 @@ namespace ECommerce.Demo.API {
 
             app.UseHttpsRedirection ();
 
+            app.UseCors("CorsPolicy");
+
             app.UseRouting ();
 
             app.UseAuthorization ();
+
 
             app.UseEndpoints (endpoints => {
                 endpoints.MapControllers ();

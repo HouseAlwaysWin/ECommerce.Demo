@@ -3,7 +3,7 @@ using ECommerce.Demo.Core.Entities;
 using ECommerce.Demo.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories.EFRepo.Specs
+namespace ECommerce.Demo.Infrastructure.Repositories.EFRepo.Specs
 {
     public class SpecEvaluator<TEntity> where TEntity :BaseEntity
     {

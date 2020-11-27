@@ -4,12 +4,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using ECommerce.Demo.API.Extensions;
 using static Dapper.Contrib.Extensions.SqlMapperExtensions;
 
 namespace ECommerce.Demo.Infrastructure.Extensions {
